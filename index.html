@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>지구를 시언하게</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gd: #2c4a2e;
+      --gm: #4a7a4e;
+      --gl: #8fbc6a;
+      --cream: #f7f3ec;
+      --bg: #f2f0ec;
+      --td: #1a2e1b;
+      --tm: #5a7a5c;
+      --nav-h: 62px;
+      --hdr-h: 54px;
+    }
+
+    html { height: 100%; }
+
+    body {
+      height: 100%;
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--td);
+      max-width: 480px;
+      margin: 0 auto;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ══ STORY ══════════════════════════════════════ */
+    #story {
+      position: absolute;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      background: var(--gd);
+      transition: opacity 0.4s ease;
+    }
+    #story.hidden { opacity: 0; pointer-events: none; }
+
+    .s-progress {
+      display: flex;
+      gap: 5px;
+      padding: 48px 16px 0;
+      flex-shrink: 0;
+    }
+    .s-seg {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.28);
+      overflow: hidden;
+    }
+    .s-seg-fill {
+      height: 100%;
+      background: #fff;
+      width: 0;
+    }
+    .s-seg.done .s-seg-fill { width: 100%; transition: none; }
+
+    #s-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 26px 36px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .s-inner {
+      width: 100%;
+      animation: s-fadein 0.32s ease;
+    }
+    @keyframes s-fadein {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .s-skip {
+      position: absolute;
+      top: 40px; right: 16px;
+      color: rgba(255,255,255,0.55);
+      font-size: 13px;
+      background: none; border: none; cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      padding: 8px; z-index: 10;
+    }
+
+    /* blobs */
+    .blob {
+      position: absolute;
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      opacity: 0.1;
+      pointer-events: none;
+      animation: blob-m 9s ease-in-out infinite;
+    }
+    @keyframes blob-m {
+      0%,100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: scale(1); }
+      33%      { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: scale(1.1); }
+      66%      { border-radius: 50% 30% 50% 70% / 30% 70% 30% 60%; transform: scale(0.95); }
+    }
+
+    /* story typography */
+    .s-badge {
+      display: inline-block;
+      border: 1px solid rgba(143,188,106,0.45);
+      color: var(--gl);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      margin-bottom: 20px;
+    }
+    .s-title {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 58px;
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .s-sub {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 24px;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.65;
+    }
+
+    .s-bubble {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 20px;
+      padding: 22px 20px;
+      text-align: left;
+      backdrop-filter: blur(6px);
+      position: relative;
+    }
+    .s-bubble::before {
+      content: '';
+      position: absolute;
+      top: -11px; left: 28px;
+      border: 11px solid transparent;
+      border-bottom-color: rgba(255,255,255,0.18);
+    }
+    .s-bubble-text {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 21px;
+      color: #fff;
+      line-height: 1.88;
+    }
+    .s-bubble-sign {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 18px;
+      color: rgba(255,255,255,0.6);
+      text-align: right;
+      margin-top: 14px;
+    }
+
+    .s-mission-preview {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 18px;
+      padding: 18px 16px;
+      text-align: left;
+      backdrop-filter: blur(6px);
+    }
+    .s-mission-day { font-size: 11px; font-weight: 700; color: var(--gl); letter-spacing: 1px; margin-bottom: 4px; }
+    .s-mission-theme { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+    .s-mission-row {
+      display: flex; gap: 8px; align-items: flex-start; margin-bottom: 10px;
+    }
+    .s-mission-num {
+      flex-shrink: 0; width: 20px; height: 20px;
+      background: var(--gl); border-radius: 50%;
+      text-align: center; line-height: 20px;
+      font-size: 10px; font-weight: 700; color: #fff; margin-top: 1px;
+    }
+    .s-mission-text { font-size: 13px; color: rgba(255,255,255,0.88); line-height: 1.55; }
+
+    .s-steps { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+    .s-step {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex; align-items: center; gap: 13px;
+      text-align: left;
+    }
+    .s-step-num {
+      flex-shrink: 0; width: 30px; height: 30px;
+      background: var(--gl); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px; color: #fff;
+    }
+    .s-step-text {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 20px; color: #fff; line-height: 1.4;
+    }
+
+    .s-start-btn {
+      margin-top: 26px;
+      padding: 15px 38px;
+      background: #fff;
+      color: var(--gd);
+      border: none; border-radius: 30px;
+      font-size: 15px; font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer;
+      transition: transform 0.12s;
+    }
+    .s-start-btn:active { transform: scale(0.96); }
+
+    /* ══ APP ════════════════════════════════════════ */
+    #app {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    #app.visible { display: flex; }
+    #app.faded { opacity: 1; }
+
+    /* Header */
+    #app-hdr {
+      flex-shrink: 0;
+      height: var(--hdr-h);
+      background: #fff;
+      border-bottom: 1px solid #e8e4de;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+    }
+    .hdr-logo {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 24px;
+      color: var(--gd);
+      line-height: 1;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .hdr-logo-dot {
+      width: 7px; height: 7px;
+      background: var(--gl);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-bottom: 1px;
+    }
+    .hdr-date {
+      font-size: 12px; font-weight: 500;
+      color: var(--tm);
+      background: var(--cream);
+      border-radius: 12px;
+      padding: 4px 10px;
+    }
+
+    /* Main scrollable area */
+    #app-main {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .tab-pane {
+      display: none;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tab-pane.active { display: block; }
+    .pane-pad { padding: 18px 17px 82px; }
+
+    /* Section heading inside panes */
+    .pane-heading {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 28px;
+      color: var(--gd);
+      margin-bottom: 2px;
+    }
+    .pane-sub {
+      font-size: 12px;
+      color: var(--tm);
+      margin-bottom: 16px;
+    }
+
+    /* Bottom Nav */
+    #bot-nav {
+      flex-shrink: 0;
+      height: var(--nav-h);
+      background: #fff;
+      border-top: 1px solid #e8e4de;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .nav-btn {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 3px; border: none; background: none;
+      cursor: pointer; color: #c0bab3;
+      transition: color 0.17s;
+      font-family: 'Noto Sans KR', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-appearance: none;
+      appearance: none;
+      outline: none;
+    }
+    .nav-btn.active { color: var(--gd); }
+    .nav-icon { width: 23px; height: 23px; }
+    .nav-label { font-size: 10px; font-weight: 500; }
+
+    /* ── MISSION TAB ─────────────────────────── */
+    .today-card {
+      background: var(--gd);
+      border-radius: 20px;
+      padding: 20px 18px 22px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    .today-card::after {
+      content: '';
+      position: absolute;
+      width: 140px; height: 140px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+      bottom: -40px; right: -20px;
+    }
+    .tc-label { font-size: 11px; color: rgba(255,255,255,0.55); margin-bottom: 3px; }
+    .tc-title {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 26px; color: #fff; margin-bottom: 3px;
+    }
+    .tc-theme { font-size: 13px; color: var(--gl); font-weight: 500; }
+
+    .day-tabs {
+      display: flex; gap: 6px;
+      overflow-x: auto; scrollbar-width: none;
+      margin-bottom: 14px;
+    }
+    .day-tabs::-webkit-scrollbar { display: none; }
+    .day-tab {
+      flex-shrink: 0;
+      padding: 7px 14px;
+      border-radius: 20px;
+      border: 1.5px solid #dbd6cf;
+      background: #fff;
+      color: var(--td);
+      font-size: 13px; font-family: 'Noto Sans KR', sans-serif; font-weight: 500;
+      cursor: pointer; transition: all 0.16s;
+    }
+    .day-tab.active { background: var(--gd); border-color: var(--gd); color: #fff; }
+
+    .mission-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 20px 18px;
+      box-shadow: 0 2px 10px rgba(44,74,46,0.07);
+    }
+    .mc-day { font-size: 11px; font-weight: 700; color: var(--gl); letter-spacing: 1px; margin-bottom: 3px; }
+    .mc-theme { font-size: 16px; font-weight: 700; color: var(--gd); margin-bottom: 14px; }
+    .mc-item { padding: 11px 0; border-top: 1px solid #f0ede8; }
+    .mc-item:first-of-type { border-top: none; padding-top: 0; }
+    .mc-row { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 5px; }
+    .mc-num {
+      flex-shrink: 0; width: 19px; height: 19px;
+      background: var(--gl); border-radius: 50%;
+      text-align: center; line-height: 19px;
+      font-size: 10px; font-weight: 700; color: #fff; margin-top: 2px;
+    }
+    .mc-text { font-size: 13.5px; line-height: 1.6; color: var(--td); }
+    .mc-comment {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 18px; color: var(--tm); padding-left: 28px;
+    }
+
+    /* ── FEED TAB ──────────────────────────── */
+    .posts-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .post-card {
+      border-radius: 14px; overflow: hidden;
+      background: #fff;
+      box-shadow: 0 1px 6px rgba(44,74,46,0.07);
+    }
+    .post-img-wrap {
+      aspect-ratio: 1; overflow: hidden;
+      background: #e4ece5;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+    }
+    .post-img { width: 100%; height: 100%; object-fit: cover; }
+    .post-text {
+      padding: 8px 9px;
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 16px; line-height: 1.4; color: var(--td);
+    }
+    .board-empty {
+      text-align: center; padding: 60px 20px;
+      color: var(--tm); font-size: 14px; line-height: 1.85;
+    }
+    .board-empty-icon { font-size: 44px; margin-bottom: 12px; }
+
+    /* FAB */
+    #fab {
+      position: fixed;
+      bottom: calc(var(--nav-h) + 14px);
+      right: max(14px, calc(50vw - 226px));
+      width: 50px; height: 50px;
+      background: var(--gd);
+      border-radius: 50%; border: none;
+      color: #fff; font-size: 26px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(44,74,46,0.38);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.14s;
+      z-index: 50;
+    }
+    #fab:active { transform: scale(0.91); }
+    #fab.off { display: none; }
+
+    /* ── GALLERY TAB ─────────────────────────── */
+    .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .gallery-item { border-radius: 14px; overflow: hidden; position: relative; aspect-ratio: 1; }
+    .gallery-ph {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 34px;
+      background: linear-gradient(135deg, #b4d0b6, #8fbc6a);
+    }
+    .gallery-img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-cap {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 8px 10px;
+      background: linear-gradient(transparent, rgba(18,44,20,0.7));
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 16px; color: #fff; line-height: 1.2;
+    }
+
+    /* ── ABOUT TAB ────────────────────────────── */
+    .about-hero {
+      background: var(--gd);
+      border-radius: 20px;
+      padding: 28px 20px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .about-title {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 30px; color: #fff; margin-bottom: 16px;
+    }
+    .about-text {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 21px; color: rgba(255,255,255,0.82); line-height: 1.88;
+    }
+    .about-chip {
+      display: inline-block;
+      border: 1px solid rgba(143,188,106,0.4);
+      color: var(--gl);
+      border-radius: 20px; padding: 6px 16px;
+      font-size: 12px; margin-top: 18px;
+    }
+    .about-row {
+      background: #fff;
+      border-radius: 14px;
+      padding: 16px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 1px 6px rgba(44,74,46,0.07);
+      cursor: pointer;
+      font-size: 14px; color: var(--td);
+    }
+    .about-row + .about-row { margin-top: 8px; }
+    .about-row-icon { font-size: 18px; }
+
+    /* ══ UPLOAD SHEET ═══════════════════════════ */
+    #upload-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.52);
+      z-index: 200;
+      max-width: 480px; margin: 0 auto;
+      align-items: flex-end;
+    }
+    #upload-overlay.open { display: flex; }
+
+    #upload-sheet {
+      background: #fff;
+      border-radius: 22px 22px 0 0;
+      padding: 6px 20px 30px;
+      width: 100%;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.32, 1.0, 0.58, 1);
+    }
+    #upload-overlay.open #upload-sheet { transform: translateY(0); }
+
+    .sheet-handle {
+      width: 34px; height: 4px;
+      background: #ddd; border-radius: 2px;
+      margin: 8px auto 16px;
+    }
+    .sheet-title { font-size: 15px; font-weight: 700; color: var(--gd); margin-bottom: 14px; }
+
+    .upload-drop {
+      width: 100%; aspect-ratio: 4/3;
+      border-radius: 13px;
+      border: 2px dashed #ccc;
+      background: var(--cream);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      cursor: pointer; overflow: hidden;
+      margin-bottom: 12px; position: relative;
+    }
+    .upload-drop:hover { border-color: var(--gl); }
+    .upload-drop img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover; display: none;
+    }
+    .upload-hint { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .upload-hint-icon { font-size: 34px; }
+    .upload-hint-text { font-size: 12px; color: var(--tm); }
+
+    input[type="file"] { display: none; }
+
+    .upload-textarea {
+      width: 100%;
+      border: 1.5px solid #ddd;
+      border-radius: 11px;
+      padding: 11px;
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 20px;
+      resize: none; outline: none;
+      color: var(--td); background: transparent;
+      transition: border-color 0.2s;
+    }
+    .upload-textarea:focus { border-color: var(--gl); }
+    .char-count { font-size: 11px; color: var(--tm); text-align: right; margin: 4px 0 13px; }
+
+    .btn-primary {
+      width: 100%; padding: 14px;
+      background: var(--gd); color: #fff;
+      border: none; border-radius: 13px;
+      font-size: 15px; font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer; transition: transform 0.1s;
+    }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { background: #bbb; cursor: not-allowed; }
+    .upload-notice { font-size: 11px; color: var(--tm); text-align: center; margin-top: 9px; }
+
+    /* ══ ADMIN PANEL ════════════════════════════ */
+    #admin-panel {
+      display: none;
+      position: fixed; inset: 0;
+      max-width: 480px; margin: 0 auto;
+      background: rgba(0,0,0,0.7);
+      z-index: 300; overflow-y: auto; padding: 20px;
+    }
+    #admin-panel.open { display: flex; flex-direction: column; }
+    .admin-box {
+      background: #fff; border-radius: 20px;
+      padding: 24px 18px; width: 100%; margin: auto;
+      position: relative;
+    }
+    .admin-close {
+      position: absolute; top: 14px; right: 14px;
+      background: none; border: none; font-size: 20px;
+      cursor: pointer; color: #888;
+    }
+    .admin-title { font-size: 16px; font-weight: 700; color: var(--gd); margin-bottom: 16px; }
+    .admin-form { display: flex; flex-direction: column; gap: 9px; }
+    .admin-input {
+      width: 100%; border: 1.5px solid #ddd; border-radius: 11px;
+      padding: 12px; font-size: 15px; outline: none;
+    }
+    .admin-input:focus { border-color: var(--gl); }
+    .pending-count { font-size: 12px; color: var(--tm); margin-bottom: 13px; }
+    .admin-item { border: 1px solid #e8e4de; border-radius: 13px; overflow: hidden; margin-bottom: 11px; }
+    .admin-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+    .admin-text { padding: 9px 11px; font-size: 13px; color: var(--td); line-height: 1.5; }
+    .admin-actions { display: flex; gap: 7px; padding: 0 11px 11px; }
+    .btn-ok {
+      flex: 1; padding: 9px;
+      background: var(--gd); color: #fff;
+      border: none; border-radius: 9px;
+      font-size: 13px; cursor: pointer;
+    }
+    .btn-no {
+      flex: 1; padding: 9px;
+      background: #e05050; color: #fff;
+      border: none; border-radius: 9px;
+      font-size: 13px; cursor: pointer;
+    }
+
+    /* 관리자 탭 */
+    .admin-tabs {
+      display: flex; gap: 5px;
+      background: #f5f3ef; border-radius: 10px;
+      padding: 3px; margin-bottom: 18px;
+    }
+    .admin-tab {
+      flex: 1; padding: 8px 6px;
+      border-radius: 8px; border: none; background: none;
+      font-size: 13px; font-weight: 500;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer; color: #999;
+      transition: all 0.15s;
+    }
+    .admin-tab.active {
+      background: #fff; color: var(--gd); font-weight: 700;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    /* 갤러리 관리 */
+    .gallery-add-btn {
+      display: flex; align-items: center; justify-content: center;
+      gap: 7px; width: 100%; padding: 13px;
+      background: #f0f7f0; border: 1.5px dashed var(--gl);
+      border-radius: 12px; color: var(--gd);
+      font-size: 14px; font-weight: 600;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer; margin-bottom: 16px;
+    }
+    .gallery-form-wrap {
+      background: #f8f8f6; border-radius: 14px;
+      padding: 14px; margin-bottom: 16px;
+    }
+    .gallery-admin-item {
+      display: flex; gap: 10px; align-items: center;
+      background: #fff; border: 1px solid #e8e4de;
+      border-radius: 12px; padding: 10px; margin-bottom: 8px;
+    }
+    .gallery-admin-thumb {
+      width: 62px; height: 62px;
+      border-radius: 9px; object-fit: cover;
+      flex-shrink: 0; background: #e8f0e9;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    .gallery-admin-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 9px; }
+    .gallery-admin-info { flex: 1; min-width: 0; }
+    .gallery-admin-date { font-size: 11px; color: var(--tm); margin-bottom: 3px; }
+    .gallery-admin-cap {
+      font-size: 13px; color: var(--td); font-weight: 500;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .btn-del {
+      flex-shrink: 0; width: 30px; height: 30px;
+      border-radius: 7px; background: #fff3f3;
+      border: 1px solid #ffd5d5; color: #e05050;
+      font-size: 13px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .gallery-empty {
+      text-align: center; padding: 32px 16px;
+      color: var(--tm); font-size: 13px; line-height: 1.7;
+    }
+    .form-label {
+      font-size: 11px; font-weight: 600; color: var(--tm);
+      margin: 10px 0 5px; display: block;
+    }
+    .form-input {
+      width: 100%; border: 1.5px solid #e0dbd4;
+      border-radius: 10px; padding: 10px 12px;
+      font-size: 14px; outline: none;
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #fff;
+    }
+    .form-input:focus { border-color: var(--gl); }
+
+    /* ══ LOADER / TOAST ═════════════════════════ */
+    .loader { display: flex; justify-content: center; padding: 32px; gap: 5px; }
+    .ld { width: 7px; height: 7px; border-radius: 50%; background: var(--gl); animation: ld 1s ease-in-out infinite; }
+    .ld:nth-child(2) { animation-delay: 0.15s; }
+    .ld:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes ld {
+      0%,100% { transform: translateY(0); opacity: 0.5; }
+      50%      { transform: translateY(-8px); opacity: 1; }
+    }
+
+    #toast {
+      position: fixed;
+      bottom: calc(var(--nav-h) + 12px); left: 50%;
+      transform: translateX(-50%) translateY(70px);
+      background: var(--gd); color: #fff;
+      padding: 10px 20px; border-radius: 26px;
+      font-size: 13px; z-index: 9999;
+      transition: transform 0.25s ease;
+      white-space: nowrap; pointer-events: none;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     STORY LAYER
+══════════════════════════════════════════════ -->
+<div id="story">
+  <button class="s-skip" id="s-skip">건너뛰기</button>
+  <div class="s-progress" id="s-progress"></div>
+  <div id="s-content"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     APP LAYER
+══════════════════════════════════════════════ -->
+<div id="app">
+  <header id="app-hdr">
+    <div class="hdr-logo">
+      지구를 시언하게
+      <div class="hdr-logo-dot"></div>
+    </div>
+    <div class="hdr-date" id="hdr-date"></div>
+  </header>
+
+  <main id="app-main">
+    <!-- 미션 -->
+    <div id="tab-mission" class="tab-pane active">
+      <div class="pane-pad">
+        <div class="today-card" id="today-card"></div>
+        <div class="day-tabs" id="day-tabs"></div>
+        <div id="mission-cards"></div>
+      </div>
+    </div>
+
+    <!-- 피드 -->
+    <div id="tab-feed" class="tab-pane">
+      <div class="pane-pad">
+        <div class="pane-heading">시민 여러분의 실천</div>
+        <div class="pane-sub">승인된 사진들이에요</div>
+        <div id="posts-container">
+          <div class="loader"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 활동 -->
+    <div id="tab-gallery" class="tab-pane">
+      <div class="pane-pad">
+        <div class="pane-heading">우리 이렇게 했어요</div>
+        <div class="pane-sub">동아리 활동 사진이에요</div>
+        <div id="gallery-container">
+          <div class="loader"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 소개 -->
+    <div id="tab-about" class="tab-pane">
+      <div class="pane-pad">
+        <div class="about-hero">
+          <div class="about-title">저희가 만들었어요</div>
+          <!-- [교체] 소개 텍스트 -->
+          <p class="about-text">
+            노원구꿈드림 환경동아리는<br>
+            학교밖청소년들이 모인 곳이에요.<br>
+            지구를 위해 뭔가 하고 싶어서<br>
+            이 페이지를 직접 만들었어요.
+          </p>
+          <div class="about-chip">🌍 지구를 시언하게</div>
+        </div>
+        <div class="about-row" id="replay-story-btn">
+          <span>인트로 다시 보기</span>
+          <span class="about-row-icon">▶</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav id="bot-nav">
+    <button class="nav-btn active" data-tab="mission">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 21C12 21 4 15 4 9a8 8 0 0 1 16 0c0 6-8 12-8 12z"/>
+        <circle cx="12" cy="9" r="2.2" fill="currentColor" stroke="none"/>
+      </svg>
+      <span class="nav-label">미션</span>
+    </button>
+    <button class="nav-btn" data-tab="feed">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1.2"/>
+        <rect x="14" y="3" width="7" height="7" rx="1.2"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.2"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.2"/>
+      </svg>
+      <span class="nav-label">피드</span>
+    </button>
+    <button class="nav-btn" data-tab="gallery">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21,15 16,10 5,21"/>
+      </svg>
+      <span class="nav-label">활동</span>
+    </button>
+    <button class="nav-btn" data-tab="about">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      <span class="nav-label">소개</span>
+    </button>
+  </nav>
+</div>
+
+<!-- FAB -->
+<button id="fab" class="off">+</button>
+
+<!-- ══ UPLOAD SHEET ══════════════════════════════ -->
+<div id="upload-overlay">
+  <div id="upload-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">나도 해봤어요! 📸</div>
+    <label for="file-input">
+      <div class="upload-drop" id="upload-drop">
+        <img id="preview-img" alt="">
+        <div class="upload-hint" id="drop-hint">
+          <div class="upload-hint-icon">📷</div>
+          <div class="upload-hint-text">사진을 눌러서 선택해주세요</div>
+        </div>
+      </div>
+    </label>
+    <input type="file" id="file-input" accept="image/*">
+    <textarea class="upload-textarea" id="upload-text" rows="2" maxlength="80"
+      placeholder="오늘 한 일을 한 줄로 써주세요 (최대 80자)"></textarea>
+    <div class="char-count"><span id="char-count">0</span>/80</div>
+    <button class="btn-primary" id="submit-btn" disabled>올리기</button>
+    <div class="upload-notice">검토 후 게시됩니다 🌿</div>
+  </div>
+</div>
+
+<!-- ══ ADMIN PANEL ════════════════════════════════ -->
+<div id="admin-panel">
+  <div class="admin-box">
+    <button class="admin-close" id="admin-close">✕</button>
+    <div class="admin-title">🔐 관리자 페이지</div>
+    <div id="admin-login-wrap">
+      <div class="admin-form">
+        <input type="password" class="admin-input" id="admin-pw" placeholder="비밀번호를 입력하세요">
+        <button class="btn-primary" id="admin-login-btn">로그인</button>
+      </div>
+    </div>
+    <div id="admin-content" style="display:none">
+      <!-- 관리자 내부 탭 -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-section="posts">게시물 승인</button>
+        <button class="admin-tab" data-section="gallery">갤러리 관리</button>
+      </div>
+
+      <!-- 게시물 승인 -->
+      <div id="admin-posts-section">
+        <div class="pending-count" id="pending-count"></div>
+        <div id="pending-list"></div>
+      </div>
+
+      <!-- 갤러리 관리 -->
+      <div id="admin-gallery-section" style="display:none">
+        <!-- 추가 폼 -->
+        <button class="gallery-add-btn" id="gallery-add-toggle">＋ 새 활동 추가</button>
+        <div class="gallery-form-wrap" id="gallery-form-wrap" style="display:none">
+          <label for="gallery-file">
+            <div class="upload-drop" id="gallery-drop" style="aspect-ratio:4/3;margin-bottom:10px">
+              <img id="gallery-preview" alt="">
+              <div class="upload-hint" id="gallery-hint">
+                <div class="upload-hint-icon">📷</div>
+                <div class="upload-hint-text">사진 선택</div>
+              </div>
+            </div>
+          </label>
+          <input type="file" id="gallery-file" accept="image/*">
+          <label class="form-label">활동 날짜</label>
+          <input type="date" class="form-input" id="gallery-date" style="margin-bottom:8px">
+          <label class="form-label">활동 내용</label>
+          <input type="text" class="form-input" id="gallery-caption"
+            placeholder="예: 분리수거 캠페인" maxlength="40" style="margin-bottom:12px">
+          <button class="btn-primary" id="gallery-save-btn" disabled>저장하기</button>
+        </div>
+
+        <!-- 목록 -->
+        <div id="gallery-admin-list">
+          <div class="loader"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// CONFIG — 아래 값을 교체해주세요
+// ══════════════════════════════════════════════
+const SUPABASE_URL      = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const ADMIN_PASSWORD    = 'sieon2024';
+const SLIDE_DURATION    = 5000; // 슬라이드당 ms
+
+// ══════════════════════════════════════════════
+// [교체 가능] 갤러리 데이터
+// ══════════════════════════════════════════════
+const galleryItems = [
+  { caption: '분리수거 함께 정리해요', emoji: '♻️', src: '' },
+  { caption: '텀블러 들고 카페 갔어요', emoji: '☕', src: '' },
+  { caption: '계단으로 올라가는 중',   emoji: '🚶', src: '' },
+  { caption: '플러그 뽑기 캠페인',     emoji: '🔌', src: '' },
+];
+
+// ══════════════════════════════════════════════
+// [교체 가능] 요일별 미션 데이터 (0=월 … 6=일)
+// ══════════════════════════════════════════════
+const missions = [
+  { day:'월요일', theme:'⚡ 전기 아껴 쓰기', list:[
+    { t:'안 보는 TV 플러그, 뽑아주세요. 전기가 몰래 새고 있어요',            c:'플러그 뽑는 데 3초도 안 걸려요' },
+    { t:'스마트폰이나 모니터 밝기를 조금만 낮춰주세요. 눈도 덜 피로해요',     c:'저도 해봤는데 배터리도 더 오래 가요' },
+    { t:'빈 방이나 화장실 나올 때 꼭 불 꺼주세요',                           c:'불 켜진 빈 방이 마음에 걸렸어요' },
+  ]},
+  { day:'화요일', theme:'🥤 일회용품 거절하기', list:[
+    { t:'배달 시킬 때 일회용 수저 빼달라고 해주세요. 집에 있잖아요',          c:'체크 하나면 되는데 안 했던 게 미안해졌어요' },
+    { t:'카페에서 텀블러 내밀어 보세요. 처음엔 어색해도 금방 익숙해져요',     c:'텀블러 쓰면 음료도 더 오래 차갑더라고요' },
+    { t:'마트나 편의점 갈 때 가방 하나 챙겨 나가주세요',                     c:'저는 현관에 가방 걸어뒀어요' },
+  ]},
+  { day:'수요일', theme:'♻️ 제대로 분리수거 하기', list:[
+    { t:'생수병 라벨 뜯고 찌그러뜨려서 버려주세요. 저도 해봤는데 쉬워요',    c:'라벨 뜯는 거 생각보다 재밌었어요' },
+    { t:'배달 용기 양념 닦아내고 물로 한 번만 헹궈서 버려주세요',            c:'조금만 신경 쓰면 되는 거였어요' },
+    { t:'택배 박스 테이프랑 운송장 스티커 뜯어내고 버려주세요',              c:'안 뜯으면 재활용이 안 된대요' },
+  ]},
+  { day:'목요일', theme:'🚶 가까운 거리는 걷기', list:[
+    { t:'3층 이하는 계단으로 올라가 주세요. 엘리베이터 저한테 양보해 주세요', c:'계단 오르면서 숨찼는데 기분은 좋았어요' },
+    { t:'한두 정거장 거리는 걸어가 주세요. 지구한테도 몸에도 좋아요',        c:'걸으면서 주변을 더 많이 보게 됐어요' },
+    { t:'오늘 타는 버스나 지하철, 한 정거장만 먼저 내려서 걸어봐 주세요',    c:'처음엔 귀찮았는데 이제 더 좋아요' },
+  ]},
+  { day:'금요일', theme:'🍚 음식 남기지 않기', list:[
+    { t:'안 먹는 밑반찬은 처음부터 빼달라고 말해주세요. 버려지는 게 아까워요', c:'말하기 어색할 수 있는데 해보면 괜찮아요' },
+    { t:'밥 먹을 만큼만 그릇에 덜어서 먹어주세요',                           c:'남기면 괜히 죄책감이 들더라고요' },
+    { t:'냉장고 유통기한 다 되어가는 것부터 먼저 꺼내 먹어주세요',           c:'냉장고 정리도 되고 일석이조예요' },
+  ]},
+  { day:'토요일', theme:'💧 물 낭비 줄이기', list:[
+    { t:'양치하는 동안 물 잠가주세요. 저 나중에 마셔야 해요',                c:'양치컵 쓰면 훨씬 편해요' },
+    { t:'샴푸나 비누칠 할 때 샤워기 잠깐 꺼두세요',                          c:'해보면 생각보다 안 불편해요' },
+    { t:'설거지할 때 물 받아두고 한꺼번에 씻어주세요',                       c:'물 쓰는 양이 눈에 띄게 줄었어요' },
+  ]},
+  { day:'일요일', theme:'🌿 일주일 돌아보며 쉬어가기', list:[
+    { t:'이번 주 미션 중 가장 쉬웠던 것 하나를 나의 평생 습관으로 정해보세요', c:'저는 불 끄기가 제일 쉬웠어요' },
+    { t:'환경을 위해 노력한 순간을 가족이나 친구에게 이야기해 보세요',        c:'말하고 나니까 더 뿌듯했어요' },
+    { t:'오늘은 새 미션 없이, 내가 정한 습관 하나만 편안하게 지켜보며 쉬어요', c:'쉬어가는 날도 필요해요' },
+  ]},
+];
+
+// ══════════════════════════════════════════════
+// Supabase
+// ══════════════════════════════════════════════
+let sb = null;
+if (SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
+  try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
+  catch(e) { console.warn('Supabase init failed', e); }
+}
+
+// helpers
+const jsDay   = new Date().getDay();
+const todayIdx = jsDay === 0 ? 6 : jsDay - 1;
+const dayNames = ['월','화','수','목','금','토','일'];
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let toastT;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ══════════════════════════════════════════════
+// STORY
+// ══════════════════════════════════════════════
+const SLIDES = ['hero','letter','mission','join'];
+let curSlide = 0;
+let slideTO  = null;
+
+function initStory() {
+  if (localStorage.getItem('story_done') || window.location.hash === '#admin') { startApp(false); return; }
+
+  // build progress segments
+  const prog = document.getElementById('s-progress');
+  SLIDES.forEach((_, i) => {
+    const seg = document.createElement('div');
+    seg.className = 's-seg';
+    seg.id = `ss${i}`;
+    seg.innerHTML = '<div class="s-seg-fill"></div>';
+    prog.appendChild(seg);
+  });
+
+  document.getElementById('s-skip').addEventListener('click', () => startApp(true));
+
+  // tap to advance / go back
+  document.getElementById('s-content').addEventListener('click', e => {
+    if (e.target.closest('button')) return; // let buttons handle themselves
+    const rect = e.currentTarget.getBoundingClientRect();
+    const ratio = (e.clientX - rect.left) / rect.width;
+    if (ratio < 0.33) goSlide(curSlide - 1);
+    else goSlide(curSlide + 1);
+  });
+
+  goSlide(0);
+}
+
+function goSlide(idx) {
+  clearTimeout(slideTO);
+
+  if (idx >= SLIDES.length) { startApp(true); return; }
+  if (idx < 0) idx = 0;
+  curSlide = idx;
+
+  // update progress bars
+  SLIDES.forEach((_, i) => {
+    const seg  = document.getElementById(`ss${i}`);
+    const fill = seg.querySelector('.s-seg-fill');
+    seg.classList.remove('done','active');
+    fill.style.animation = 'none';
+    fill.offsetHeight; // reflow
+    if (i < idx) {
+      seg.classList.add('done');
+    } else if (i === idx) {
+      seg.classList.add('active');
+      fill.style.animation = `s-fill-anim ${SLIDE_DURATION}ms linear forwards`;
+    }
+  });
+
+  // background
+  const bgs = { hero:'#2c4a2e', letter:'#355838', mission:'#243c26', join:'#4a7a4e' };
+  document.getElementById('story').style.background = bgs[SLIDES[idx]];
+
+  // render slide content
+  renderSlide(SLIDES[idx]);
+
+  slideTO = setTimeout(() => goSlide(curSlide + 1), SLIDE_DURATION);
+}
+
+function renderSlide(type) {
+  const el = document.getElementById('s-content');
+  const inner = document.createElement('div');
+  inner.className = 's-inner';
+
+  const today = missions[todayIdx];
+
+  if (type === 'hero') {
+    inner.innerHTML = `
+      <div class="blob" style="width:260px;height:260px;background:#8fbc6a;top:-90px;left:-90px;position:absolute;animation-delay:0s"></div>
+      <div class="blob" style="width:180px;height:180px;background:#a8d080;bottom:-60px;right:-60px;position:absolute;animation-delay:-4s"></div>
+      <div style="position:relative;z-index:2">
+        <div class="s-badge">노원구꿈드림 환경동아리</div>
+        <div class="s-title">지구를<br>시언하게</div>
+        <div class="s-sub">저희가 어른들한테<br>부탁이 있어요</div>
+      </div>`;
+  } else if (type === 'letter') {
+    inner.innerHTML = `
+      <div class="s-badge" style="margin-bottom:20px">저희 한마디</div>
+      <div class="s-bubble">
+        <p class="s-bubble-text">
+          안녕하세요,<br>저희는 노원구 꿈드림 환경동아리예요.<br><br>
+          어른들이 조금만 바꿔주시면<br>
+          지구가 진짜 달라질 수 있다고 생각했어요.<br><br>
+          거창한 게 아니에요.<br>
+          오늘 하루, 미션 하나만요. 🌱
+        </p>
+        <div class="s-bubble-sign">— 환경동아리 일동</div>
+      </div>`;
+  } else if (type === 'mission') {
+    inner.innerHTML = `
+      <div class="s-badge" style="margin-bottom:14px">오늘의 미션</div>
+      <div style="font-family:'Nanum Pen Script',cursive;font-size:24px;color:#fff;margin-bottom:18px">요일마다 미션 하나씩 해봐요</div>
+      <div class="s-mission-preview">
+        <div class="s-mission-day">${today.day}</div>
+        <div class="s-mission-theme">${today.theme}</div>
+        ${today.list.slice(0,2).map((m,i)=>`
+          <div class="s-mission-row">
+            <div class="s-mission-num">${i+1}</div>
+            <div class="s-mission-text">${esc(m.t)}</div>
+          </div>`).join('')}
+      </div>`;
+  } else if (type === 'join') {
+    inner.innerHTML = `
+      <div class="s-badge" style="margin-bottom:16px">함께해요!</div>
+      <div class="s-steps">
+        <div class="s-step"><div class="s-step-num">1</div><div class="s-step-text">미션을 보고 하나 골라요</div></div>
+        <div class="s-step"><div class="s-step-num">2</div><div class="s-step-text">직접 따라해 봐요</div></div>
+        <div class="s-step"><div class="s-step-num">3</div><div class="s-step-text">사진 찍고 올리면 피드에 실려요 📸</div></div>
+      </div>
+      <button class="s-start-btn" id="s-start">시작하기 →</button>`;
+    setTimeout(() => {
+      document.getElementById('s-start')?.addEventListener('click', () => startApp(true));
+    }, 0);
+  }
+
+  el.innerHTML = '';
+  el.appendChild(inner);
+}
+
+function startApp(animate) {
+  clearTimeout(slideTO);
+  localStorage.setItem('story_done', '1');
+  const story = document.getElementById('story');
+  const app   = document.getElementById('app');
+
+  app.classList.add('visible');
+  initApp();
+
+  if (animate) {
+    story.style.opacity = '0';
+    setTimeout(() => { story.style.display = 'none'; app.style.opacity = '1'; }, 400);
+  } else {
+    story.style.display = 'none';
+    app.style.opacity = '1';
+  }
+}
+
+// inject keyframe for story progress bar fill
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `@keyframes s-fill-anim { from{width:0} to{width:100%} }`;
+document.head.appendChild(styleSheet);
+
+// ══════════════════════════════════════════════
+// APP
+// ══════════════════════════════════════════════
+function initApp() {
+  const now  = new Date();
+  const mo   = now.getMonth() + 1;
+  const d    = now.getDate();
+  const fullDays = ['월요일','화요일','수요일','목요일','금요일','토요일','일요일'];
+  document.getElementById('hdr-date').textContent = `${mo}월 ${d}일 ${fullDays[todayIdx]}`;
+
+  initTabs();
+  initMissions();
+  initGallery();
+  initUpload();
+  initAbout();
+  initAdmin();
+  loadPosts();
+}
+
+// ── TABS
+function initTabs() {
+  const fab = document.getElementById('fab');
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.getElementById(`tab-${tab}`).classList.add('active');
+      fab.classList.toggle('off', tab !== 'feed');
+    });
+  });
+}
+
+// ── MISSIONS
+function initMissions() {
+  const today = missions[todayIdx];
+  document.getElementById('today-card').innerHTML = `
+    <div class="tc-label">오늘의 미션</div>
+    <div class="tc-title">${today.day}</div>
+    <div class="tc-theme">${today.theme}</div>`;
+
+  const tabsEl = document.getElementById('day-tabs');
+  dayNames.forEach((name, i) => {
+    const b = document.createElement('button');
+    b.className = 'day-tab' + (i === todayIdx ? ' active' : '');
+    b.textContent = name;
+    b.addEventListener('click', () => {
+      tabsEl.querySelectorAll('.day-tab').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      document.querySelectorAll('.mission-card').forEach((c,j) => {
+        c.style.display = j === i ? 'block' : 'none';
+      });
+    });
+    tabsEl.appendChild(b);
+  });
+
+  const container = document.getElementById('mission-cards');
+  missions.forEach((d, i) => {
+    const card = document.createElement('div');
+    card.className = 'mission-card';
+    card.style.display = i === todayIdx ? 'block' : 'none';
+    card.innerHTML = `
+      <div class="mc-day">${d.day}</div>
+      <div class="mc-theme">${d.theme}</div>
+      ${d.list.map((m, j) => `
+        <div class="mc-item">
+          <div class="mc-row">
+            <div class="mc-num">${j+1}</div>
+            <div class="mc-text">${esc(m.t)}</div>
+          </div>
+          <div class="mc-comment">"${esc(m.c)}"</div>
+        </div>`).join('')}`;
+    container.appendChild(card);
+  });
+}
+
+// ── GALLERY (Supabase에서 불러오기, 없으면 하드코딩 fallback)
+async function initGallery() {
+  const container = document.getElementById('gallery-container');
+
+  if (!sb) {
+    renderGalleryGrid(container, galleryItems.map(i => ({
+      image_url: i.src || null, caption: i.caption, _emoji: i.emoji
+    })));
+    return;
+  }
+
+  try {
+    const { data, error } = await sb
+      .from('gallery')
+      .select('id, image_url, caption, activity_date')
+      .order('activity_date', { ascending: false });
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      // Supabase에 데이터 없으면 하드코딩 fallback
+      renderGalleryGrid(container, galleryItems.map(i => ({
+        image_url: i.src || null, caption: i.caption, _emoji: i.emoji
+      })));
+      return;
+    }
+    renderGalleryGrid(container, data);
+  } catch(e) {
+    renderGalleryGrid(container, galleryItems.map(i => ({
+      image_url: i.src || null, caption: i.caption, _emoji: i.emoji
+    })));
+  }
+}
+
+function renderGalleryGrid(container, items) {
+  if (!items || items.length === 0) {
+    container.innerHTML = `<div class="gallery-empty">아직 활동 사진이 없어요 🌱</div>`;
+    return;
+  }
+  const grid = document.createElement('div');
+  grid.className = 'gallery-grid';
+  items.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'gallery-item';
+    const dateStr = item.activity_date
+      ? `<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.45);color:#fff;font-size:10px;border-radius:6px;padding:2px 6px">${item.activity_date}</div>`
+      : '';
+    el.innerHTML = item.image_url
+      ? `<img class="gallery-img" src="${item.image_url}" alt="${esc(item.caption)}" loading="lazy">
+         ${dateStr}
+         <div class="gallery-cap">${esc(item.caption)}</div>`
+      : `<div class="gallery-ph">${item._emoji || '🌿'}</div>
+         <div class="gallery-cap">${esc(item.caption)}</div>`;
+    grid.appendChild(el);
+  });
+  container.innerHTML = '';
+  container.appendChild(grid);
+}
+
+// ── POSTS
+async function loadPosts() {
+  const container = document.getElementById('posts-container');
+  if (!sb) {
+    container.innerHTML = `<div class="board-empty"><div class="board-empty-icon">🌱</div>Supabase 설정 후<br>여기에 실천 사진이 나타나요!</div>`;
+    return;
+  }
+  try {
+    const { data, error } = await sb
+      .from('posts').select('id,text,image_url')
+      .eq('status','approved').order('created_at',{ascending:false});
+    if (error) throw error;
+    if (!data || data.length === 0) {
+      container.innerHTML = `<div class="board-empty"><div class="board-empty-icon">🌱</div>아직 게시물이 없어요.<br>첫 번째로 실천해봐요!</div>`;
+      return;
+    }
+    const grid = document.createElement('div');
+    grid.className = 'posts-grid';
+    data.forEach(post => {
+      const card = document.createElement('div');
+      card.className = 'post-card';
+      card.innerHTML = `
+        <div class="post-img-wrap">
+          ${post.image_url ? `<img class="post-img" src="${post.image_url}" alt="" loading="lazy">` : '🌿'}
+        </div>
+        <div class="post-text">${esc(post.text)}</div>`;
+      grid.appendChild(card);
+    });
+    container.innerHTML = '';
+    container.appendChild(grid);
+  } catch(e) {
+    container.innerHTML = `<div class="board-empty">게시물을 불러오지 못했어요 😅</div>`;
+  }
+}
+
+// ── UPLOAD
+function initUpload() {
+  const fab      = document.getElementById('fab');
+  const overlay  = document.getElementById('upload-overlay');
+  const fileInput = document.getElementById('file-input');
+  const prevImg  = document.getElementById('preview-img');
+  const hint     = document.getElementById('drop-hint');
+  const textarea  = document.getElementById('upload-text');
+  const counter  = document.getElementById('char-count');
+  const submitBtn = document.getElementById('submit-btn');
+  let file = null;
+
+  fab.addEventListener('click', () => overlay.classList.add('open'));
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeSheet(); });
+
+  function closeSheet() { overlay.classList.remove('open'); }
+
+  fileInput.addEventListener('change', e => {
+    file = e.target.files[0];
+    if (!file) return;
+    prevImg.src = URL.createObjectURL(file);
+    prevImg.style.display = 'block';
+    hint.style.display = 'none';
+    check();
+  });
+
+  textarea.addEventListener('input', () => { counter.textContent = textarea.value.length; check(); });
+
+  function check() {
+    submitBtn.disabled = !(file && textarea.value.trim().length > 0);
+  }
+
+  submitBtn.addEventListener('click', async () => {
+    if (!file || !textarea.value.trim()) return;
+    if (!sb) { toast('Supabase 설정이 필요해요!'); return; }
+    submitBtn.disabled = true; submitBtn.textContent = '올리는 중...';
+    try {
+      const ext  = file.name.split('.').pop() || 'jpg';
+      const name = `${Date.now()}.${ext}`;
+      const { error: se } = await sb.storage.from('post-images').upload(name, file, { cacheControl:'3600', upsert:false });
+      if (se) throw se;
+      const { data: ud } = sb.storage.from('post-images').getPublicUrl(name);
+      const { error: de } = await sb.from('posts').insert({ text: textarea.value.trim(), image_url: ud.publicUrl, status:'pending' });
+      if (de) throw de;
+      file = null; fileInput.value = '';
+      prevImg.src = ''; prevImg.style.display = 'none';
+      hint.style.display = 'flex';
+      textarea.value = ''; counter.textContent = '0';
+      submitBtn.textContent = '올리기'; submitBtn.disabled = true;
+      closeSheet();
+      toast('올렸어요! 검토 후 게시될 거예요 🌿');
+    } catch(e) {
+      console.error(e);
+      toast('오류가 났어요. 다시 시도해주세요 😅');
+      submitBtn.disabled = false; submitBtn.textContent = '올리기';
+    }
+  });
+}
+
+// ── ABOUT
+function initAbout() {
+  document.getElementById('replay-story-btn').addEventListener('click', () => {
+    localStorage.removeItem('story_done');
+    location.reload();
+  });
+}
+
+// ── ADMIN
+function initAdmin() {
+  const panel    = document.getElementById('admin-panel');
+  const closeBtn = document.getElementById('admin-close');
+  const loginBtn = document.getElementById('admin-login-btn');
+  const pwInput  = document.getElementById('admin-pw');
+
+  function syncHash() {
+    if (window.location.hash === '#admin') { panel.classList.add('open'); }
+    else {
+      panel.classList.remove('open');
+      document.getElementById('admin-login-wrap').style.display = 'block';
+      document.getElementById('admin-content').style.display = 'none';
+      pwInput.value = '';
+    }
+  }
+  window.addEventListener('hashchange', syncHash);
+  syncHash();
+
+  closeBtn.addEventListener('click', () => { history.pushState('','', ' '); panel.classList.remove('open'); });
+  pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') loginBtn.click(); });
+  loginBtn.addEventListener('click', () => {
+    if (pwInput.value === ADMIN_PASSWORD) {
+      document.getElementById('admin-login-wrap').style.display = 'none';
+      document.getElementById('admin-content').style.display = 'block';
+      loadPending();
+      initGalleryAdmin();
+    } else { toast('비밀번호가 틀렸어요!'); pwInput.value = ''; }
+  });
+
+  // 관리자 내부 탭 전환
+  document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const sec = tab.dataset.section;
+      document.getElementById('admin-posts-section').style.display   = sec === 'posts'   ? 'block' : 'none';
+      document.getElementById('admin-gallery-section').style.display = sec === 'gallery' ? 'block' : 'none';
+    });
+  });
+}
+
+async function loadPending() {
+  const list = document.getElementById('pending-list');
+  const cnt  = document.getElementById('pending-count');
+  if (!sb) { list.innerHTML = '<div style="color:#888;font-size:13px">Supabase 설정이 필요해요.</div>'; return; }
+  list.innerHTML = '<div class="loader"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>';
+  try {
+    const { data, error } = await sb.from('posts').select('*').eq('status','pending').order('created_at',{ascending:true});
+    if (error) throw error;
+    cnt.textContent = `대기 중인 게시물: ${data.length}개`;
+    if (data.length === 0) { list.innerHTML = '<div style="color:#888;font-size:13px;text-align:center;padding:24px">대기 중인 게시물이 없어요 ✅</div>'; return; }
+    list.innerHTML = '';
+    data.forEach(post => {
+      const item = document.createElement('div');
+      item.className = 'admin-item';
+      const ok = document.createElement('button'); ok.className = 'btn-ok'; ok.textContent = '✅ 승인';
+      const no = document.createElement('button'); no.className = 'btn-no'; no.textContent = '❌ 반려';
+      item.innerHTML = `
+        ${post.image_url ? `<img class="admin-img" src="${post.image_url}" alt="" loading="lazy">` : ''}
+        <div class="admin-text">${esc(post.text)}</div>
+        <div class="admin-actions"></div>`;
+      item.querySelector('.admin-actions').append(ok, no);
+      ok.addEventListener('click', async () => {
+        [ok,no].forEach(b => b.disabled = true);
+        try {
+          const { error } = await sb.from('posts').update({status:'approved'}).eq('id', post.id);
+          if (error) throw error;
+          item.remove(); adjustCnt(-1, cnt); toast('승인했어요 ✅');
+        } catch(e) { toast('오류가 났어요 😅'); [ok,no].forEach(b => b.disabled = false); }
+      });
+      no.addEventListener('click', async () => {
+        [ok,no].forEach(b => b.disabled = true);
+        try {
+          if (post.image_url) {
+            const p = decodeURIComponent(post.image_url.split('/post-images/').pop());
+            if (p) await sb.storage.from('post-images').remove([p]);
+          }
+          const { error } = await sb.from('posts').delete().eq('id', post.id);
+          if (error) throw error;
+          item.remove(); adjustCnt(-1, cnt); toast('반려했어요 ❌');
+        } catch(e) { toast('오류가 났어요 😅'); [ok,no].forEach(b => b.disabled = false); }
+      });
+      list.appendChild(item);
+    });
+  } catch(e) {
+    list.innerHTML = '<div style="color:#e00;font-size:13px">불러오기 실패</div>';
+  }
+}
+
+// ── GALLERY ADMIN
+function initGalleryAdmin() {
+  const toggle   = document.getElementById('gallery-add-toggle');
+  const formWrap = document.getElementById('gallery-form-wrap');
+  const fileInput = document.getElementById('gallery-file');
+  const preview  = document.getElementById('gallery-preview');
+  const hint     = document.getElementById('gallery-hint');
+  const dateInput = document.getElementById('gallery-date');
+  const capInput  = document.getElementById('gallery-caption');
+  const saveBtn   = document.getElementById('gallery-save-btn');
+  let gFile = null;
+
+  // 오늘 날짜 기본값
+  dateInput.value = new Date().toISOString().slice(0, 10);
+
+  toggle.addEventListener('click', () => {
+    const open = formWrap.style.display === 'block';
+    formWrap.style.display = open ? 'none' : 'block';
+    toggle.textContent = open ? '＋ 새 활동 추가' : '✕ 닫기';
+  });
+
+  fileInput.addEventListener('change', e => {
+    gFile = e.target.files[0];
+    if (!gFile) return;
+    preview.src = URL.createObjectURL(gFile);
+    preview.style.display = 'block';
+    hint.style.display = 'none';
+    checkGalleryForm();
+  });
+
+  [capInput, dateInput].forEach(el => el.addEventListener('input', checkGalleryForm));
+
+  function checkGalleryForm() {
+    saveBtn.disabled = !(gFile && capInput.value.trim());
+  }
+
+  saveBtn.addEventListener('click', async () => {
+    if (!gFile || !capInput.value.trim()) return;
+    if (!sb) { toast('Supabase 설정이 필요해요!'); return; }
+
+    saveBtn.disabled = true; saveBtn.textContent = '저장 중...';
+    try {
+      const ext  = gFile.name.split('.').pop() || 'jpg';
+      const name = `gallery_${Date.now()}.${ext}`;
+      const { error: se } = await sb.storage.from('gallery-images').upload(name, gFile, { cacheControl:'3600', upsert:false });
+      if (se) throw se;
+
+      const { data: ud } = sb.storage.from('gallery-images').getPublicUrl(name);
+      const { error: de } = await sb.from('gallery').insert({
+        image_url:     ud.publicUrl,
+        caption:       capInput.value.trim(),
+        activity_date: dateInput.value || null,
+      });
+      if (de) throw de;
+
+      // 폼 초기화
+      gFile = null; fileInput.value = '';
+      preview.src = ''; preview.style.display = 'none';
+      hint.style.display = 'flex';
+      capInput.value = '';
+      dateInput.value = new Date().toISOString().slice(0, 10);
+      saveBtn.textContent = '저장하기'; saveBtn.disabled = true;
+      formWrap.style.display = 'none';
+      toggle.textContent = '＋ 새 활동 추가';
+
+      toast('갤러리에 추가했어요 🌿');
+      loadGalleryAdmin();
+      initGallery(); // 갤러리 탭도 새로고침
+    } catch(e) {
+      console.error(e);
+      toast('저장 중 오류가 났어요 😅');
+      saveBtn.disabled = false; saveBtn.textContent = '저장하기';
+    }
+  });
+
+  loadGalleryAdmin();
+}
+
+async function loadGalleryAdmin() {
+  const list = document.getElementById('gallery-admin-list');
+  if (!sb) {
+    list.innerHTML = '<div class="gallery-empty">Supabase 설정이 필요해요.</div>';
+    return;
+  }
+  list.innerHTML = '<div class="loader"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>';
+  try {
+    const { data, error } = await sb
+      .from('gallery').select('*')
+      .order('activity_date', { ascending: false });
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      list.innerHTML = '<div class="gallery-empty">아직 등록된 활동이 없어요.<br>위에서 추가해주세요!</div>';
+      return;
+    }
+
+    list.innerHTML = '';
+    data.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'gallery-admin-item';
+
+      const thumb = document.createElement('div');
+      thumb.className = 'gallery-admin-thumb';
+      if (item.image_url) {
+        thumb.innerHTML = `<img src="${item.image_url}" alt="" loading="lazy">`;
+      } else {
+        thumb.textContent = '🌿';
+      }
+
+      const info = document.createElement('div');
+      info.className = 'gallery-admin-info';
+      info.innerHTML = `
+        <div class="gallery-admin-date">${item.activity_date || '날짜 없음'}</div>
+        <div class="gallery-admin-cap">${esc(item.caption)}</div>`;
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'btn-del';
+      delBtn.innerHTML = '🗑';
+      delBtn.title = '삭제';
+      delBtn.addEventListener('click', async () => {
+        if (!confirm(`"${item.caption}" 을 삭제할까요?`)) return;
+        delBtn.disabled = true;
+        try {
+          if (item.image_url) {
+            const path = decodeURIComponent(item.image_url.split('/gallery-images/').pop());
+            if (path) await sb.storage.from('gallery-images').remove([path]);
+          }
+          const { error } = await sb.from('gallery').delete().eq('id', item.id);
+          if (error) throw error;
+          row.remove();
+          toast('삭제했어요 🗑');
+          initGallery();
+        } catch(e) {
+          toast('삭제 중 오류가 났어요 😅');
+          delBtn.disabled = false;
+        }
+      });
+
+      row.append(thumb, info, delBtn);
+      list.appendChild(row);
+    });
+  } catch(e) {
+    list.innerHTML = '<div class="gallery-empty" style="color:#e00">불러오기 실패</div>';
+    console.error(e);
+  }
+}
+
+function adjustCnt(delta, el) {
+  const m = el.textContent.match(/\d+/);
+  const n = m ? parseInt(m[0]) + delta : 0;
+  el.textContent = `대기 중인 게시물: ${n}개`;
+  if (n <= 0) document.getElementById('pending-list').innerHTML =
+    '<div style="color:#888;font-size:13px;text-align:center;padding:24px">대기 중인 게시물이 없어요 ✅</div>';
+}
+
+// ══════════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════════
+initStory();
+</script>
+</body>
+</html>
