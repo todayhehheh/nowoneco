@@ -928,7 +928,7 @@
   <!-- Phase 2: 슬라이드 화면 -->
   <div id="letter-screen">
     <!-- Slide 1: 동아리 사진 -->
-    <div class="slide-screen active" id="slide-1">
+    <div class="slide-screen" id="slide-1">
       <div class="slide-label">동아리 사진</div>
       <div class="slide-photo-wrap">
         <div class="slide-ph slide-ph-photo">
@@ -1269,6 +1269,7 @@ function initStory() {
       envScreen.style.opacity = '0';
       envScreen.style.pointerEvents = 'none';
       letterScreen.classList.add('visible');
+      slide1.classList.add('active');
     }, 720);
   }
 
