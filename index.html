@@ -478,19 +478,20 @@
     /* ── GALLERY TAB ─────────────────────────── */
     .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
     .gallery-item {
-      border-radius: 16px; overflow: hidden; position: relative; aspect-ratio: 1;
+      border-radius: 16px; overflow: hidden; position: relative;
       cursor: pointer;
       box-shadow: var(--shadow-card);
       transition: transform 0.12s;
+      background: #f0f4f0;
     }
     .gallery-item:active { transform: scale(0.96); }
     .gallery-ph {
-      width: 100%; height: 100%;
+      width: 100%; aspect-ratio: 1;
       display: flex; align-items: center; justify-content: center;
       font-size: 34px;
       background: linear-gradient(135deg, #b4d0b6, #8fbc6a);
     }
-    .gallery-img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-img { width: 100%; height: auto; display: block; }
     .gallery-cap {
       position: absolute; bottom: 0; left: 0; right: 0;
       padding: 8px 10px;
