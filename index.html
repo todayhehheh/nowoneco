@@ -345,20 +345,8 @@
       -webkit-appearance: none;
       appearance: none;
       outline: none;
-      position: relative;
-      padding-top: 8px;
-    }
-    .nav-btn::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 50%; transform: translateX(-50%);
-      width: 0; height: 3px;
-      background: var(--gl);
-      border-radius: 0 0 3px 3px;
-      transition: width 0.2s ease;
     }
     .nav-btn.active { color: var(--gd); }
-    .nav-btn.active::before { width: 28px; }
     .nav-icon { width: 22px; height: 22px; }
     .nav-label { font-size: 10px; font-weight: 600; }
 
@@ -475,25 +463,18 @@
     .board-empty-icon { font-size: 44px; margin-bottom: 12px; }
 
     /* FAB */
-    #fab {
-      position: fixed;
-      bottom: calc(var(--nav-h) + 16px);
-      right: max(16px, calc(50vw - 224px));
-      width: 52px; height: 52px;
-      background: linear-gradient(135deg, #2c4a2e 0%, #4a7a4e 100%);
-      border-radius: 50%; border: none;
-      color: #fff; font-size: 26px;
-      cursor: pointer;
-      box-shadow: 0 6px 20px rgba(44,74,46,0.42), 0 2px 6px rgba(44,74,46,0.18);
-      display: flex; align-items: center; justify-content: center;
-      transition: transform 0.14s, box-shadow 0.14s;
-      z-index: 50;
+    .feed-upload-btn {
+      display: block; width: 100%;
+      padding: 13px;
+      background: var(--gd); color: #fff;
+      border: none; border-radius: 14px;
+      font-size: 15px; font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer; margin-bottom: 16px;
+      box-shadow: 0 4px 14px rgba(44,74,46,0.22);
+      transition: opacity 0.15s;
     }
-    #fab:active {
-      transform: scale(0.92);
-      box-shadow: 0 3px 10px rgba(44,74,46,0.28);
-    }
-    #fab.off { display: none; }
+    .feed-upload-btn:active { opacity: 0.82; }
 
     /* ── GALLERY TAB ─────────────────────────── */
     .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
@@ -874,6 +855,7 @@
       <div class="pane-pad">
         <div class="pane-heading">시민 여러분의 실천</div>
         <div class="pane-sub">승인된 사진들이에요</div>
+        <button class="feed-upload-btn" id="feed-upload-btn">📸 나도 해봤어요!</button>
         <div id="posts-container">
           <div class="loader"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>
         </div>
@@ -886,7 +868,7 @@
         <div class="pane-heading">우리 이렇게 했어요</div>
         <div class="pane-sub">동아리 활동 사진이에요</div>
         <div class="gallery-year-tabs" id="gallery-year-tabs">
-          <button class="gallery-year-tab active" data-year="current">올해 활동</button>
+          <button class="gallery-year-tab active" data-year="current" id="gallery-tab-current">올해 활동</button>
           <button class="gallery-year-tab" data-year="prev">이전 활동</button>
         </div>
         <div id="gallery-container-current">
@@ -956,8 +938,6 @@
   </nav>
 </div>
 
-<!-- FAB -->
-<button id="fab" class="off">+</button>
 
 <!-- ══ UPLOAD SHEET ══════════════════════════════ -->
 <div id="upload-overlay">
@@ -1052,7 +1032,7 @@
 // ══════════════════════════════════════════════
 const SUPABASE_URL      = 'https://oyickjksxfjzzrlqswma.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_SrTFw1w5IJpq3uhjK6ri4Q_Spo8Zp61';
-const ADMIN_PASSWORD    = 'sieon2024';
+const ADMIN_PASSWORD    = '1388';
 const SLIDE_DURATION    = 5000; // 슬라이드당 ms
 
 // ══════════════════════════════════════════════
@@ -1314,7 +1294,6 @@ function initApp() {
 
 // ── TABS
 function initTabs() {
-  const fab = document.getElementById('fab');
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -1322,7 +1301,6 @@ function initTabs() {
       const tab = btn.dataset.tab;
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
       document.getElementById(`tab-${tab}`).classList.add('active');
-      fab.classList.toggle('off', tab !== 'feed');
     });
   });
 }
@@ -1372,6 +1350,8 @@ function initMissions() {
 
 // ── GALLERY 연도 서브탭 (한 번만 초기화)
 function initGalleryYearTabs() {
+  const curBtn = document.getElementById('gallery-tab-current');
+  if (curBtn) curBtn.textContent = new Date().getFullYear() + '년 활동';
   document.querySelectorAll('.gallery-year-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.gallery-year-tab').forEach(t => t.classList.remove('active'));
@@ -1495,7 +1475,6 @@ async function loadPosts() {
 
 // ── UPLOAD
 function initUpload() {
-  const fab      = document.getElementById('fab');
   const overlay  = document.getElementById('upload-overlay');
   const fileInput = document.getElementById('file-input');
   const prevImg  = document.getElementById('preview-img');
@@ -1505,7 +1484,7 @@ function initUpload() {
   const submitBtn = document.getElementById('submit-btn');
   let file = null;
 
-  fab.addEventListener('click', () => overlay.classList.add('open'));
+  document.getElementById('feed-upload-btn').addEventListener('click', () => overlay.classList.add('open'));
   overlay.addEventListener('click', e => { if (e.target === overlay) closeSheet(); });
 
   function closeSheet() { overlay.classList.remove('open'); }
@@ -1632,7 +1611,7 @@ async function loadPending() {
         try {
           const { error } = await sb.from('posts').update({status:'approved'}).eq('id', post.id);
           if (error) throw error;
-          item.remove(); adjustCnt(-1, cnt); toast('승인했어요 ✅');
+          item.remove(); adjustCnt(-1, cnt);
         } catch(e) { toast('오류가 났어요 😅'); [ok,no].forEach(b => b.disabled = false); }
       });
       no.addEventListener('click', async () => {
@@ -1644,7 +1623,7 @@ async function loadPending() {
           }
           const { error } = await sb.from('posts').delete().eq('id', post.id);
           if (error) throw error;
-          item.remove(); adjustCnt(-1, cnt); toast('반려했어요 ❌');
+          item.remove(); adjustCnt(-1, cnt);
         } catch(e) { toast('오류가 났어요 😅'); [ok,no].forEach(b => b.disabled = false); }
       });
       list.appendChild(item);
