@@ -976,6 +976,7 @@
       <!-- 관리자 내부 탭 -->
       <div class="admin-tabs">
         <button class="admin-tab active" data-section="posts">게시물 승인</button>
+        <button class="admin-tab" data-section="approved">게시물 관리</button>
         <button class="admin-tab" data-section="gallery">갤러리 관리</button>
       </div>
 
@@ -983,6 +984,12 @@
       <div id="admin-posts-section">
         <div class="pending-count" id="pending-count"></div>
         <div id="pending-list"></div>
+      </div>
+
+      <!-- 게시물 관리 (승인된 글) -->
+      <div id="admin-approved-section" style="display:none">
+        <div class="pending-count" id="approved-count"></div>
+        <div id="approved-list"></div>
       </div>
 
       <!-- 갤러리 관리 -->
@@ -1578,8 +1585,10 @@ function initAdmin() {
       document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       const sec = tab.dataset.section;
-      document.getElementById('admin-posts-section').style.display   = sec === 'posts'   ? 'block' : 'none';
-      document.getElementById('admin-gallery-section').style.display = sec === 'gallery' ? 'block' : 'none';
+      document.getElementById('admin-posts-section').style.display    = sec === 'posts'    ? 'block' : 'none';
+      document.getElementById('admin-approved-section').style.display = sec === 'approved' ? 'block' : 'none';
+      document.getElementById('admin-gallery-section').style.display  = sec === 'gallery'  ? 'block' : 'none';
+      if (sec === 'approved') loadApproved();
     });
   });
 }
@@ -1624,6 +1633,48 @@ async function loadPending() {
           if (error) throw error;
           item.remove(); adjustCnt(-1, cnt);
         } catch(e) { toast('오류가 났어요 😅'); [ok,no].forEach(b => b.disabled = false); }
+      });
+      list.appendChild(item);
+    });
+  } catch(e) {
+    list.innerHTML = '<div style="color:#e00;font-size:13px">불러오기 실패</div>';
+  }
+}
+
+async function loadApproved() {
+  const list = document.getElementById('approved-list');
+  const cnt  = document.getElementById('approved-count');
+  if (!sb) { list.innerHTML = '<div style="color:#888;font-size:13px">Supabase 설정이 필요해요.</div>'; return; }
+  list.innerHTML = '<div class="loader"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>';
+  try {
+    const { data, error } = await sb.from('posts').select('*').eq('status','approved').order('created_at',{ascending:false});
+    if (error) throw error;
+    cnt.textContent = `승인된 게시물: ${data.length}개`;
+    if (data.length === 0) { list.innerHTML = '<div style="color:#888;font-size:13px;text-align:center;padding:24px">승인된 게시물이 없어요</div>'; return; }
+    list.innerHTML = '';
+    data.forEach(post => {
+      const item = document.createElement('div');
+      item.className = 'admin-item';
+      const del = document.createElement('button'); del.className = 'btn-no'; del.textContent = '🗑 삭제';
+      item.innerHTML = `
+        ${post.image_url ? `<img class="admin-img" src="${post.image_url}" alt="" loading="lazy">` : ''}
+        <div class="admin-text">${esc(post.text)}</div>
+        <div class="admin-actions"></div>`;
+      item.querySelector('.admin-actions').append(del);
+      del.addEventListener('click', async () => {
+        if (!confirm('이 게시물을 삭제할까요?')) return;
+        del.disabled = true;
+        try {
+          if (post.image_url) {
+            const p = decodeURIComponent(post.image_url.split('/post-images/').pop());
+            if (p) await sb.storage.from('post-images').remove([p]);
+          }
+          const { error } = await sb.from('posts').delete().eq('id', post.id);
+          if (error) throw error;
+          item.remove();
+          cnt.textContent = `승인된 게시물: ${parseInt(cnt.textContent) - 1}개`;
+          loadPosts();
+        } catch(e) { toast('오류가 났어요 😅'); del.disabled = false; }
       });
       list.appendChild(item);
     });
