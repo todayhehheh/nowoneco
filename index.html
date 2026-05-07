@@ -866,8 +866,8 @@
     <!-- 활동 -->
     <div id="tab-gallery" class="tab-pane">
       <div class="pane-pad">
-        <div class="pane-heading">우리 이렇게 했어요</div>
-        <div class="pane-sub">동아리 활동 사진이에요</div>
+        <div class="pane-heading">저희의 활동이에요!</div>
+        <div class="pane-sub">동아리가 직접 찍은 사진이에요 🌿</div>
         <div class="gallery-year-tabs" id="gallery-year-tabs">
           <button class="gallery-year-tab active" data-year="current" id="gallery-tab-current">올해 활동</button>
           <button class="gallery-year-tab" data-year="prev">이전 활동</button>
@@ -1423,7 +1423,7 @@ function renderGalleryGrid(container, items) {
     const el = document.createElement('div');
     el.className = 'gallery-item';
     const dateStr = item.activity_date
-      ? `<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.45);color:#fff;font-size:10px;border-radius:6px;padding:2px 6px">${item.activity_date}</div>`
+      ? `<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.38);color:#fff;font-size:14px;border-radius:8px;padding:2px 8px;font-family:'Nanum Pen Script',cursive">${item.activity_date}</div>`
       : '';
     if (item.image_url) {
       el.innerHTML = `<img class="gallery-img" src="${item.image_url}" alt="${esc(item.caption)}" loading="lazy"
