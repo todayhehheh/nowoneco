@@ -6,8 +6,8 @@
   "scope": "/nowoneco/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#2c4a2e",
-  "theme_color": "#2c4a2e",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "icons": [
     {
       "src": "https://placehold.co/192x192/2c4a2e/8fbc6a?text=🌿",
