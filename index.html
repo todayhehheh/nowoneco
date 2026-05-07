@@ -54,33 +54,76 @@
       position: relative;
     }
 
-    /* ══ ENVELOPE INTRO ═════════════════════════════ */
+    /* ══ STORY ══════════════════════════════════════ */
     #story {
       position: absolute;
       inset: 0;
       z-index: 100;
-      background: var(--grad-hero);
-      overflow: hidden;
-      transition: opacity 0.5s ease;
+      display: flex;
+      flex-direction: column;
+      background: var(--gd);
+      transition: opacity 0.4s ease;
     }
 
-    /* ── Phase 1: Envelope screen */
-    #env-screen {
+    .s-progress {
+      display: flex;
+      gap: 5px;
+      padding: 48px 16px 0;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .s-seg {
+      flex: 1; height: 3px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.28);
+      overflow: hidden;
+    }
+    .s-seg-fill {
+      height: 100%; width: 0;
+      background: #fff;
+      transition: width 0.25s ease;
+    }
+    .s-seg.done .s-seg-fill { width: 100%; transition: none; }
+    .s-seg.active .s-seg-fill { width: 100%; }
+
+    .s-skip {
+      position: absolute;
+      top: 40px; right: 16px;
+      color: rgba(255,255,255,0.55);
+      font-size: 13px;
+      background: none; border: none; cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      padding: 8px; z-index: 10;
+    }
+
+    #s-content {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .s-slide {
       position: absolute;
       inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 30px;
-      padding: 40px 24px;
-      transition: opacity 0.4s ease;
+      padding: 20px 26px 36px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
     }
+    .s-slide.active { opacity: 1; pointer-events: auto; }
 
-    .env-blob {
+    /* blobs */
+    .blob {
       position: absolute;
       border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-      opacity: 0.08;
+      opacity: 0.1;
       pointer-events: none;
       animation: blob-m 9s ease-in-out infinite;
     }
@@ -90,210 +133,112 @@
       66%      { border-radius: 50% 30% 50% 70% / 30% 70% 30% 60%; transform: scale(0.95); }
     }
 
-    .env-title {
+    /* text slides */
+    .s-badge {
+      display: inline-block;
+      border: 1px solid rgba(143,188,106,0.45);
+      color: var(--gl);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      margin-bottom: 20px;
+    }
+    .s-title {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 58px; color: #fff;
+      line-height: 1.15; margin-bottom: 14px;
+    }
+    .s-sub {
       font-family: 'Nanum Pen Script', cursive;
       font-size: 24px;
-      color: rgba(255,255,255,0.9);
-      text-align: center;
-      line-height: 1.5;
-      position: relative;
-      z-index: 1;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.65;
     }
 
-    .env-outer {
-      perspective: 700px;
-      cursor: pointer;
-      position: relative;
-      z-index: 1;
-      animation: env-float 3s ease-in-out infinite;
-    }
-    @keyframes env-float {
-      0%,100% { transform: translateY(0px); }
-      50%      { transform: translateY(-10px); }
-    }
-    .env-outer.opening { animation: none; }
-
-    .env-box {
-      width: 270px;
-      height: 185px;
-      position: relative;
-      filter: drop-shadow(0 18px 44px rgba(0,0,0,0.3));
-    }
-    .env-back {
+    /* photo slides */
+    .s-photo-wrap {
       position: absolute;
       inset: 0;
-      background: #f3e9d2;
-      border-radius: 6px;
-    }
-    .env-fold-l {
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      border-top: 92px solid transparent;
-      border-bottom: 93px solid transparent;
-      border-left: 135px solid #ecdcc0;
-    }
-    .env-fold-r {
-      position: absolute;
-      right: 0; top: 0; bottom: 0;
-      border-top: 92px solid transparent;
-      border-bottom: 93px solid transparent;
-      border-right: 135px solid #e8d6ba;
-    }
-    .env-fold-b {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      border-left: 135px solid transparent;
-      border-right: 135px solid transparent;
-      border-bottom: 100px solid #e5d0ac;
-    }
-    .env-flap {
-      position: absolute;
-      top: 0; left: 0;
-      width: 270px;
-      height: 105px;
-      background: #eddfc6;
-      clip-path: polygon(0 0, 100% 0, 50% 88%);
-      transform-origin: top center;
-      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 2;
-    }
-    .env-outer.opening .env-flap { transform: rotateX(-180deg); }
-
-    .env-peek {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 100%;
-      width: 210px;
-      background: #fffdf6;
-      border-radius: 6px 6px 0 0;
-      padding: 10px 18px 6px;
-      box-shadow: 0 -4px 14px rgba(0,0,0,0.1);
-      z-index: 1;
-      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-      transform-origin: bottom center;
-    }
-    .env-peek-line {
-      height: 2px;
-      background: rgba(160,130,80,0.18);
-      border-radius: 1px;
-      margin-bottom: 7px;
-    }
-    .env-peek-line:last-child { margin-bottom: 0; width: 55%; }
-    .env-outer.opening .env-peek { transform: translateX(-50%) translateY(-30px); }
-
-    .env-tap-hint {
-      font-size: 12px;
-      color: rgba(255,255,255,0.45);
-      letter-spacing: 0.5px;
-      position: relative;
-      z-index: 1;
-      animation: hint-blink 2.2s ease-in-out infinite;
-    }
-    @keyframes hint-blink {
-      0%,100% { opacity: 0.45; }
-      50%      { opacity: 0.9; }
-    }
-
-    /* ── Phase 2: 슬라이드 화면 */
-    #letter-screen {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
       pointer-events: none;
-      transition: opacity 0.45s ease;
-      z-index: 4;
     }
-    #letter-screen.visible { opacity: 1; pointer-events: auto; }
-
-    .slide-screen {
-      position: absolute;
-      inset: 0;
-      background: var(--grad-hero);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 52px 22px 36px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.35s ease;
-      cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-    .slide-screen.active { opacity: 1; pointer-events: auto; }
-
-    .slide-label {
-      font-size: 11px;
-      color: rgba(255,255,255,0.5);
-      letter-spacing: 1.5px;
-      margin-bottom: 16px;
-      flex-shrink: 0;
-    }
-
-    .slide-photo-wrap {
-      flex: 1;
-      width: 100%;
-      border-radius: 22px;
-      overflow: hidden;
-      box-shadow: 0 10px 36px rgba(0,0,0,0.3);
-      display: flex;
-    }
-    .slide-photo-wrap img {
+    .s-photo-wrap img {
       width: 100%; height: 100%;
       object-fit: cover; display: block;
     }
-
-    .slide-ph {
-      flex: 1; width: 100%;
+    .s-photo-ph {
+      width: 100%; height: 100%;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       gap: 14px;
     }
-    .slide-ph-photo { background: linear-gradient(135deg, #ddeedd, #c6dfc6); }
-    .slide-ph-letter {
-      background: linear-gradient(160deg, #fffdf6 0%, #faf3e0 100%);
+    .s-photo-ph-club  { background: linear-gradient(150deg, #243c28, #3d6b40); }
+    .s-photo-ph-letter {
+      background: linear-gradient(160deg, #2e2416, #4a3820);
       position: relative; overflow: hidden;
     }
-    .slide-ph-letter::before {
+    .s-photo-ph-letter::before {
       content: '';
       position: absolute; inset: 0;
       background: repeating-linear-gradient(
-        transparent, transparent 29px,
-        rgba(180,150,90,0.14) 29px, rgba(180,150,90,0.14) 30px
+        transparent, transparent 31px,
+        rgba(255,220,140,0.1) 31px, rgba(255,220,140,0.1) 32px
       );
     }
-    .slide-ph-icon { font-size: 48px; opacity: 0.4; position: relative; z-index: 1; }
-    .slide-ph-text {
+    .s-photo-ph-icon { font-size: 52px; opacity: 0.5; position: relative; }
+    .s-photo-ph-text {
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 24px; color: var(--gm);
-      opacity: 0.7; position: relative; z-index: 1;
+      font-size: 26px; color: rgba(255,255,255,0.65);
+      position: relative;
+    }
+    .s-photo-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 180px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.55));
+      pointer-events: none;
+    }
+    .s-photo-caption {
+      position: absolute;
+      bottom: 44px; left: 24px; right: 24px;
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 22px;
+      color: rgba(255,255,255,0.88);
+      pointer-events: none;
     }
 
-    .slide-hint {
-      flex-shrink: 0;
-      margin-top: 20px;
-      font-size: 13px;
-      color: rgba(255,255,255,0.5);
-      animation: hint-blink 2.2s ease-in-out infinite;
+    /* join slide */
+    .s-steps { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+    .s-step {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex; align-items: center; gap: 13px;
+      text-align: left;
     }
-
-    .slide-start-btn {
-      flex-shrink: 0;
-      margin-top: 20px;
-      width: 100%;
-      padding: 17px;
-      background: #fff;
-      color: var(--gd);
-      border: none;
-      border-radius: 18px;
-      font-size: 16px; font-weight: 700;
+    .s-step-num {
+      flex-shrink: 0; width: 30px; height: 30px;
+      background: var(--gl); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px; color: #fff;
+    }
+    .s-step-text {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 20px; color: #fff; line-height: 1.4;
+    }
+    .s-start-btn {
+      margin-top: 28px;
+      padding: 16px 44px;
+      background: #fff; color: var(--gd);
+      border: none; border-radius: 32px;
+      font-size: 15px; font-weight: 700;
       font-family: 'Noto Sans KR', sans-serif;
       cursor: pointer;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.16);
-      transition: transform 0.12s;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.14);
+      transition: transform 0.12s, box-shadow 0.12s;
     }
-    .slide-start-btn:active { transform: scale(0.97); }
+    .s-start-btn:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
     /* ══ APP ════════════════════════════════════════ */
     #app {
@@ -900,59 +845,9 @@
      STORY LAYER
 ══════════════════════════════════════════════ -->
 <div id="story">
-  <!-- Phase 1: Envelope -->
-  <div id="env-screen">
-    <div class="env-blob" style="width:320px;height:320px;background:#8fbc6a;top:-130px;left:-110px"></div>
-    <div class="env-blob" style="width:220px;height:220px;background:#a8d080;bottom:-90px;right:-70px;animation-delay:-4s"></div>
-
-    <div class="env-title">아이들이 편지를 썼어요</div>
-
-    <div class="env-outer" id="env-outer">
-      <div class="env-peek">
-        <div class="env-peek-line"></div>
-        <div class="env-peek-line"></div>
-        <div class="env-peek-line"></div>
-      </div>
-      <div class="env-box">
-        <div class="env-back"></div>
-        <div class="env-fold-l"></div>
-        <div class="env-fold-r"></div>
-        <div class="env-fold-b"></div>
-        <div class="env-flap"></div>
-      </div>
-    </div>
-
-    <div class="env-tap-hint">탭해서 열어봐요</div>
-  </div>
-
-  <!-- Phase 2: 슬라이드 화면 -->
-  <div id="letter-screen">
-    <!-- Slide 1: 동아리 사진 -->
-    <div class="slide-screen" id="slide-1">
-      <div class="slide-label">동아리 사진</div>
-      <div class="slide-photo-wrap">
-        <div class="slide-ph slide-ph-photo">
-          <div class="slide-ph-icon">📸</div>
-          <div class="slide-ph-text">동아리 사진이 들어와요</div>
-        </div>
-        <!-- <img src="img/club-photo.jpg" alt="동아리 사진"> -->
-      </div>
-      <div class="slide-hint">탭해서 계속</div>
-    </div>
-
-    <!-- Slide 2: 손편지 -->
-    <div class="slide-screen" id="slide-2">
-      <div class="slide-label">아이들의 손편지</div>
-      <div class="slide-photo-wrap">
-        <div class="slide-ph slide-ph-letter">
-          <div class="slide-ph-icon">✏️</div>
-          <div class="slide-ph-text">손편지가 들어와요</div>
-        </div>
-        <!-- <img src="img/letter.jpg" alt="손편지"> -->
-      </div>
-      <button class="slide-start-btn" id="slide-start-btn">미션 보러 가기 →</button>
-    </div>
-  </div>
+  <button class="s-skip" id="s-skip">건너뛰기</button>
+  <div class="s-progress" id="s-progress"></div>
+  <div id="s-content"></div>
 </div>
 
 <!-- ══════════════════════════════════════════════
@@ -1248,40 +1143,128 @@ function toast(msg) {
 }
 
 // ══════════════════════════════════════════════
-// INTRO — 봉투 언박싱
+// STORY (수동 탭 이동)
 // ══════════════════════════════════════════════
+// 슬라이드 순서: hero → photo(동아리 사진) → letter(손편지) → join
+const SLIDES = ['hero', 'photo', 'letter', 'join'];
+let curSlide = 0;
+
 function initStory() {
   if (localStorage.getItem('story_done') || window.location.hash === '#admin') {
-    startApp(false);
-    return;
+    startApp(false); return;
   }
 
-  const envOuter     = document.getElementById('env-outer');
-  const envScreen    = document.getElementById('env-screen');
-  const letterScreen = document.getElementById('letter-screen');
-  const slide1       = document.getElementById('slide-1');
-  const slide2       = document.getElementById('slide-2');
+  const prog = document.getElementById('s-progress');
+  SLIDES.forEach((_, i) => {
+    const seg = document.createElement('div');
+    seg.className = 's-seg';
+    seg.id = `ss${i}`;
+    seg.innerHTML = '<div class="s-seg-fill"></div>';
+    prog.appendChild(seg);
+  });
 
-  function openEnvelope() {
-    if (envOuter.classList.contains('opening')) return;
-    envOuter.classList.add('opening');
-    setTimeout(() => {
-      envScreen.style.opacity = '0';
-      envScreen.style.pointerEvents = 'none';
-      letterScreen.classList.add('visible');
-      slide1.classList.add('active');
-    }, 720);
-  }
+  document.getElementById('s-skip').addEventListener('click', () => startApp(true));
 
-  function goSlide2(e) {
+  const sCont = document.getElementById('s-content');
+  let _sx = 0;
+  sCont.addEventListener('touchstart', e => { _sx = e.touches[0].clientX; }, { passive: true });
+  sCont.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - _sx;
+    if (Math.abs(dx) > 40) { goSlide(dx < 0 ? curSlide + 1 : curSlide - 1); }
+  }, { passive: true });
+  sCont.addEventListener('click', e => {
     if (e.target.closest('button')) return;
-    slide1.classList.remove('active');
-    slide2.classList.add('active');
+    const rect = sCont.getBoundingClientRect();
+    const ratio = (e.clientX - rect.left) / rect.width;
+    goSlide(ratio < 0.3 ? curSlide - 1 : curSlide + 1);
+  });
+
+  goSlide(0);
+}
+
+function goSlide(idx) {
+  if (idx >= SLIDES.length) { startApp(true); return; }
+  if (idx < 0) idx = 0;
+  curSlide = idx;
+
+  SLIDES.forEach((_, i) => {
+    const seg = document.getElementById(`ss${i}`);
+    seg.classList.toggle('done', i < idx);
+    seg.classList.toggle('active', i === idx);
+  });
+
+  const bgs = { hero:'#2c4a2e', photo:'#1e3422', letter:'#2a1e10', join:'#3d6b40' };
+  document.getElementById('story').style.background = bgs[SLIDES[idx]];
+
+  renderSlide(SLIDES[idx]);
+}
+
+function renderSlide(type) {
+  const cont = document.getElementById('s-content');
+  cont.querySelectorAll('.s-slide').forEach(el => el.remove());
+
+  const slide = document.createElement('div');
+  slide.className = 's-slide active';
+
+  if (type === 'hero') {
+    slide.innerHTML = `
+      <div class="blob" style="width:260px;height:260px;background:#8fbc6a;top:-90px;left:-90px;position:absolute;animation-delay:0s"></div>
+      <div class="blob" style="width:180px;height:180px;background:#a8d080;bottom:-60px;right:-60px;position:absolute;animation-delay:-4s"></div>
+      <div style="position:relative;z-index:2">
+        <div class="s-badge">노원구꿈드림 환경동아리</div>
+        <div class="s-title">지구를<br>시언하게</div>
+        <div class="s-sub">저희가 어른들한테<br>부탁이 있어요</div>
+      </div>`;
+
+  } else if (type === 'photo') {
+    slide.style.padding = '0';
+    slide.innerHTML = `
+      <div class="s-photo-wrap">
+        <div class="s-photo-ph s-photo-ph-club">
+          <div class="s-photo-ph-icon">📸</div>
+          <div class="s-photo-ph-text">동아리 사진이 들어와요</div>
+        </div>
+        <!-- 사진 준비되면 위 div 지우고 아래 주석 해제 -->
+        <!-- <img src="img/club-photo.jpg" alt="동아리 사진"> -->
+      </div>
+      <div class="s-photo-overlay"></div>
+      <div class="s-photo-caption">저희 환경동아리예요 👋</div>`;
+
+  } else if (type === 'letter') {
+    slide.style.padding = '0';
+    slide.innerHTML = `
+      <div class="s-photo-wrap">
+        <div class="s-photo-ph s-photo-ph-letter">
+          <div class="s-photo-ph-icon">✏️</div>
+          <div class="s-photo-ph-text">손편지가 들어와요</div>
+        </div>
+        <!-- 편지 사진 준비되면 위 div 지우고 아래 주석 해제 -->
+        <!-- <img src="img/letter.jpg" alt="손편지"> -->
+      </div>
+      <div class="s-photo-overlay"></div>
+      <div class="s-photo-caption">아이들이 직접 쓴 편지예요</div>`;
+
+  } else if (type === 'join') {
+    slide.innerHTML = `
+      <div class="blob" style="width:200px;height:200px;background:#8fbc6a;top:-60px;right:-60px;position:absolute;animation-delay:-2s"></div>
+      <div style="position:relative;z-index:2;width:100%">
+        <div class="s-badge" style="margin-bottom:16px">함께해요!</div>
+        <div class="s-steps">
+          <div class="s-step"><div class="s-step-num">1</div><div class="s-step-text">미션을 보고 하나 골라요</div></div>
+          <div class="s-step"><div class="s-step-num">2</div><div class="s-step-text">직접 따라해 봐요</div></div>
+          <div class="s-step"><div class="s-step-num">3</div><div class="s-step-text">사진 찍고 올리면 피드에 실려요 📸</div></div>
+        </div>
+        <button class="s-start-btn" id="s-start">시작하기 →</button>
+      </div>`;
+    setTimeout(() => {
+      document.getElementById('s-start')?.addEventListener('click', e => {
+        e.stopPropagation();
+        startApp(true);
+      });
+    }, 0);
   }
 
-  envScreen.addEventListener('click', openEnvelope);
-  slide1.addEventListener('click', goSlide2);
-  document.getElementById('slide-start-btn').addEventListener('click', () => startApp(true));
+  cont.appendChild(slide);
 }
 
 function startApp(animate) {
