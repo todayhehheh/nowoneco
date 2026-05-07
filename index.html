@@ -737,8 +737,28 @@
       font-size: 13px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
     }
+    /* 갤러리 연도 서브탭 */
+    .gallery-year-tabs {
+      display: flex; gap: 7px; margin-bottom: 16px;
+    }
+    .gallery-year-tab {
+      padding: 8px 20px;
+      border-radius: 20px;
+      border: 1.5px solid #dbd6cf;
+      background: #fff;
+      font-size: 13px; font-weight: 500;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer; transition: all 0.18s;
+      color: var(--td);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .gallery-year-tab.active {
+      background: var(--gd); border-color: var(--gd); color: #fff;
+      box-shadow: 0 3px 12px rgba(44,74,46,0.28);
+    }
+
     .gallery-empty {
-      text-align: center; padding: 32px 16px;
+      text-align: center; padding: 40px 16px;
       color: var(--tm); font-size: 13px; line-height: 1.7;
     }
     .form-label {
@@ -865,7 +885,14 @@
       <div class="pane-pad">
         <div class="pane-heading">우리 이렇게 했어요</div>
         <div class="pane-sub">동아리 활동 사진이에요</div>
-        <div id="gallery-container">
+        <div class="gallery-year-tabs" id="gallery-year-tabs">
+          <button class="gallery-year-tab active" data-year="current">올해 활동</button>
+          <button class="gallery-year-tab" data-year="prev">이전 활동</button>
+        </div>
+        <div id="gallery-container-current">
+          <div class="loader"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>
+        </div>
+        <div id="gallery-container-prev" style="display:none">
           <div class="loader"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>
         </div>
       </div>
@@ -1276,6 +1303,7 @@ function initApp() {
 
   initTabs();
   initMissions();
+  initGalleryYearTabs();
   initGallery();
   initUpload();
   initAbout();
@@ -1342,14 +1370,32 @@ function initMissions() {
   });
 }
 
+// ── GALLERY 연도 서브탭 (한 번만 초기화)
+function initGalleryYearTabs() {
+  document.querySelectorAll('.gallery-year-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.gallery-year-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const isCurrent = tab.dataset.year === 'current';
+      document.getElementById('gallery-container-current').style.display = isCurrent ? 'block' : 'none';
+      document.getElementById('gallery-container-prev').style.display   = isCurrent ? 'none'  : 'block';
+    });
+  });
+}
+
 // ── GALLERY (Supabase에서 불러오기, 없으면 하드코딩 fallback)
 async function initGallery() {
-  const container = document.getElementById('gallery-container');
+  const thisYear = String(new Date().getFullYear());
+  const cCont = document.getElementById('gallery-container-current');
+  const pCont = document.getElementById('gallery-container-prev');
+  const loader = '<div class="loader"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>';
+  cCont.innerHTML = loader; pCont.innerHTML = loader;
+
+  const fallback = galleryItems.map(i => ({ image_url: i.src || null, caption: i.caption, _emoji: i.emoji }));
 
   if (!sb) {
-    renderGalleryGrid(container, galleryItems.map(i => ({
-      image_url: i.src || null, caption: i.caption, _emoji: i.emoji
-    })));
+    renderGalleryGrid(cCont, fallback);
+    renderGalleryGrid(pCont, []);
     return;
   }
 
@@ -1361,23 +1407,26 @@ async function initGallery() {
     if (error) throw error;
 
     if (!data || data.length === 0) {
-      // Supabase에 데이터 없으면 하드코딩 fallback
-      renderGalleryGrid(container, galleryItems.map(i => ({
-        image_url: i.src || null, caption: i.caption, _emoji: i.emoji
-      })));
+      renderGalleryGrid(cCont, fallback);
+      renderGalleryGrid(pCont, []);
       return;
     }
-    renderGalleryGrid(container, data);
+
+    const cur  = data.filter(i => i.activity_date && i.activity_date.startsWith(thisYear));
+    const prev = data.filter(i => !i.activity_date || !i.activity_date.startsWith(thisYear));
+
+    renderGalleryGrid(cCont, cur.length > 0 ? cur : fallback);
+    renderGalleryGrid(pCont, prev);
   } catch(e) {
-    renderGalleryGrid(container, galleryItems.map(i => ({
-      image_url: i.src || null, caption: i.caption, _emoji: i.emoji
-    })));
+    renderGalleryGrid(cCont, fallback);
+    renderGalleryGrid(pCont, []);
   }
 }
 
 function renderGalleryGrid(container, items) {
   if (!items || items.length === 0) {
-    container.innerHTML = `<div class="gallery-empty">아직 활동 사진이 없어요 🌱</div>`;
+    const isPrev = container.id === 'gallery-container-prev';
+    container.innerHTML = `<div class="gallery-empty">${isPrev ? '기록된 이전 활동이 없어요 🌿<br>올해 열심히 활동하면<br>내년에 여기 쌓여요!' : '아직 활동 사진이 없어요 🌱'}</div>`;
     return;
   }
   const grid = document.createElement('div');
