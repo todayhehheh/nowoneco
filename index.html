@@ -54,73 +54,33 @@
       position: relative;
     }
 
-    /* ══ STORY ══════════════════════════════════════ */
+    /* ══ ENVELOPE INTRO ═════════════════════════════ */
     #story {
       position: absolute;
       inset: 0;
       z-index: 100;
-      display: flex;
-      flex-direction: column;
-      background: var(--gd);
-      transition: opacity 0.4s ease;
-    }
-    #story.hidden { opacity: 0; pointer-events: none; }
-
-    .s-progress {
-      display: flex;
-      gap: 5px;
-      padding: 48px 16px 0;
-      flex-shrink: 0;
-    }
-    .s-seg {
-      flex: 1;
-      height: 3px;
-      border-radius: 2px;
-      background: rgba(255,255,255,0.28);
+      background: var(--grad-hero);
       overflow: hidden;
+      transition: opacity 0.5s ease;
     }
-    .s-seg-fill {
-      height: 100%;
-      background: #fff;
-      width: 0;
-    }
-    .s-seg.done .s-seg-fill { width: 100%; transition: none; }
 
-    #s-content {
-      flex: 1;
+    /* ── Phase 1: Envelope screen */
+    #env-screen {
+      position: absolute;
+      inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px 26px 36px;
-      text-align: center;
-      overflow: hidden;
+      gap: 30px;
+      padding: 40px 24px;
+      transition: opacity 0.4s ease;
     }
 
-    .s-inner {
-      width: 100%;
-      animation: s-fadein 0.32s ease;
-    }
-    @keyframes s-fadein {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .s-skip {
-      position: absolute;
-      top: 40px; right: 16px;
-      color: rgba(255,255,255,0.55);
-      font-size: 13px;
-      background: none; border: none; cursor: pointer;
-      font-family: 'Noto Sans KR', sans-serif;
-      padding: 8px; z-index: 10;
-    }
-
-    /* blobs */
-    .blob {
+    .env-blob {
       position: absolute;
       border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-      opacity: 0.1;
+      opacity: 0.08;
       pointer-events: none;
       animation: blob-m 9s ease-in-out infinite;
     }
@@ -130,115 +90,236 @@
       66%      { border-radius: 50% 30% 50% 70% / 30% 70% 30% 60%; transform: scale(0.95); }
     }
 
-    /* story typography */
-    .s-badge {
+    .env-title {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 24px;
+      color: rgba(255,255,255,0.9);
+      text-align: center;
+      line-height: 1.5;
+      position: relative;
+      z-index: 1;
+    }
+
+    .env-outer {
+      perspective: 700px;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+      animation: env-float 3s ease-in-out infinite;
+    }
+    @keyframes env-float {
+      0%,100% { transform: translateY(0px); }
+      50%      { transform: translateY(-10px); }
+    }
+    .env-outer.opening { animation: none; }
+
+    .env-box {
+      width: 270px;
+      height: 185px;
+      position: relative;
+      filter: drop-shadow(0 18px 44px rgba(0,0,0,0.3));
+    }
+    .env-back {
+      position: absolute;
+      inset: 0;
+      background: #f3e9d2;
+      border-radius: 6px;
+    }
+    .env-fold-l {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      border-top: 92px solid transparent;
+      border-bottom: 93px solid transparent;
+      border-left: 135px solid #ecdcc0;
+    }
+    .env-fold-r {
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      border-top: 92px solid transparent;
+      border-bottom: 93px solid transparent;
+      border-right: 135px solid #e8d6ba;
+    }
+    .env-fold-b {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      border-left: 135px solid transparent;
+      border-right: 135px solid transparent;
+      border-bottom: 100px solid #e5d0ac;
+    }
+    .env-flap {
+      position: absolute;
+      top: 0; left: 0;
+      width: 270px;
+      height: 105px;
+      background: #eddfc6;
+      clip-path: polygon(0 0, 100% 0, 50% 88%);
+      transform-origin: top center;
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 2;
+    }
+    .env-outer.opening .env-flap { transform: rotateX(-180deg); }
+
+    .env-peek {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 100%;
+      width: 210px;
+      background: #fffdf6;
+      border-radius: 6px 6px 0 0;
+      padding: 10px 18px 6px;
+      box-shadow: 0 -4px 14px rgba(0,0,0,0.1);
+      z-index: 1;
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: bottom center;
+    }
+    .env-peek-line {
+      height: 2px;
+      background: rgba(160,130,80,0.18);
+      border-radius: 1px;
+      margin-bottom: 7px;
+    }
+    .env-peek-line:last-child { margin-bottom: 0; width: 55%; }
+    .env-outer.opening .env-peek { transform: translateX(-50%) translateY(-30px); }
+
+    .env-tap-hint {
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.5px;
+      position: relative;
+      z-index: 1;
+      animation: hint-blink 2.2s ease-in-out infinite;
+    }
+    @keyframes hint-blink {
+      0%,100% { opacity: 0.45; }
+      50%      { opacity: 0.9; }
+    }
+
+    /* ── Phase 2: Letter screen */
+    #letter-screen {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      background: var(--bg);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.45s ease;
+      z-index: 4;
+    }
+    #letter-screen.visible { opacity: 1; pointer-events: auto; }
+
+    .letter-inner {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+      padding-bottom: 48px;
+    }
+
+    .letter-hero {
+      background: var(--grad-hero);
+      padding: 52px 24px 44px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .letter-hero-badge {
       display: inline-block;
       border: 1px solid rgba(143,188,106,0.45);
       color: var(--gl);
       border-radius: 20px;
-      padding: 5px 14px;
+      padding: 4px 14px;
       font-size: 11px;
       letter-spacing: 1.5px;
-      margin-bottom: 20px;
-    }
-    .s-title {
-      font-family: 'Nanum Pen Script', cursive;
-      font-size: 58px;
-      color: #fff;
-      line-height: 1.15;
       margin-bottom: 14px;
     }
-    .s-sub {
+    .letter-hero-title {
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 24px;
-      color: rgba(255,255,255,0.78);
-      line-height: 1.65;
+      font-size: 48px;
+      color: #fff;
+      line-height: 1.2;
     }
 
-    .s-bubble {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.18);
+    .letter-card {
+      margin: -22px 18px 0;
+      background: #fff;
       border-radius: 20px;
-      padding: 22px 20px;
-      text-align: left;
-      backdrop-filter: blur(6px);
+      overflow: hidden;
+      box-shadow: 0 6px 28px rgba(44,74,46,0.12);
       position: relative;
+      z-index: 2;
     }
-    .s-bubble::before {
+    .letter-card + .letter-card { margin-top: 16px; z-index: 1; }
+    .letter-card img { width: 100%; height: auto; display: block; }
+
+    .letter-ph {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 24px;
+    }
+    .letter-ph-photo {
+      aspect-ratio: 4/3;
+      background: linear-gradient(135deg, #ddeedd, #c8dfc8);
+    }
+    .letter-ph-letter {
+      aspect-ratio: 3/4;
+      background: linear-gradient(160deg, #fffdf6 0%, #faf3e0 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .letter-ph-letter::before {
       content: '';
       position: absolute;
-      top: -11px; left: 28px;
-      border: 11px solid transparent;
-      border-bottom-color: rgba(255,255,255,0.18);
+      inset: 20px;
+      background: repeating-linear-gradient(
+        transparent, transparent 29px,
+        rgba(180,150,90,0.14) 29px, rgba(180,150,90,0.14) 30px
+      );
     }
-    .s-bubble-text {
+    .letter-ph-icon { font-size: 38px; opacity: 0.45; position: relative; z-index: 1; }
+    .letter-ph-text {
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 21px;
+      font-size: 20px;
+      color: var(--gm);
+      opacity: 0.7;
+      position: relative;
+      z-index: 1;
+    }
+    .letter-ph-sub { font-size: 11px; color: #bbb; position: relative; z-index: 1; }
+
+    .letter-cta-area {
+      padding: 28px 18px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .letter-cta-btn {
+      width: 100%;
+      padding: 18px;
+      background: var(--gd);
       color: #fff;
-      line-height: 1.88;
-    }
-    .s-bubble-sign {
-      font-family: 'Nanum Pen Script', cursive;
-      font-size: 18px;
-      color: rgba(255,255,255,0.6);
-      text-align: right;
-      margin-top: 14px;
-    }
-
-    .s-mission-preview {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.15);
+      border: none;
       border-radius: 18px;
-      padding: 18px 16px;
-      text-align: left;
-      backdrop-filter: blur(6px);
-    }
-    .s-mission-day { font-size: 11px; font-weight: 700; color: var(--gl); letter-spacing: 1px; margin-bottom: 4px; }
-    .s-mission-theme { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 12px; }
-    .s-mission-row {
-      display: flex; gap: 8px; align-items: flex-start; margin-bottom: 10px;
-    }
-    .s-mission-num {
-      flex-shrink: 0; width: 20px; height: 20px;
-      background: var(--gl); border-radius: 50%;
-      text-align: center; line-height: 20px;
-      font-size: 10px; font-weight: 700; color: #fff; margin-top: 1px;
-    }
-    .s-mission-text { font-size: 13px; color: rgba(255,255,255,0.88); line-height: 1.55; }
-
-    .s-steps { display: flex; flex-direction: column; gap: 12px; width: 100%; }
-    .s-step {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 14px;
-      padding: 14px 16px;
-      display: flex; align-items: center; gap: 13px;
-      text-align: left;
-    }
-    .s-step-num {
-      flex-shrink: 0; width: 30px; height: 30px;
-      background: var(--gl); border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 13px; color: #fff;
-    }
-    .s-step-text {
-      font-family: 'Nanum Pen Script', cursive;
-      font-size: 20px; color: #fff; line-height: 1.4;
-    }
-
-    .s-start-btn {
-      margin-top: 28px;
-      padding: 16px 44px;
-      background: #fff;
-      color: var(--gd);
-      border: none; border-radius: 32px;
-      font-size: 15px; font-weight: 700;
+      font-size: 16px;
+      font-weight: 700;
       font-family: 'Noto Sans KR', sans-serif;
       cursor: pointer;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.14);
+      box-shadow: 0 6px 20px rgba(44,74,46,0.25);
       transition: transform 0.12s, box-shadow 0.12s;
     }
-    .s-start-btn:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .letter-cta-btn:active { transform: scale(0.97); box-shadow: 0 2px 10px rgba(44,74,46,0.15); }
+    .letter-skip-btn {
+      font-size: 12px;
+      color: var(--tm);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      padding: 4px 8px;
+    }
 
     /* ══ APP ════════════════════════════════════════ */
     #app {
@@ -845,9 +926,65 @@
      STORY LAYER
 ══════════════════════════════════════════════ -->
 <div id="story">
-  <button class="s-skip" id="s-skip">건너뛰기</button>
-  <div class="s-progress" id="s-progress"></div>
-  <div id="s-content"></div>
+  <!-- Phase 1: Envelope -->
+  <div id="env-screen">
+    <div class="env-blob" style="width:320px;height:320px;background:#8fbc6a;top:-130px;left:-110px"></div>
+    <div class="env-blob" style="width:220px;height:220px;background:#a8d080;bottom:-90px;right:-70px;animation-delay:-4s"></div>
+
+    <div class="env-title">아이들이 편지를 썼어요</div>
+
+    <div class="env-outer" id="env-outer">
+      <div class="env-peek">
+        <div class="env-peek-line"></div>
+        <div class="env-peek-line"></div>
+        <div class="env-peek-line"></div>
+      </div>
+      <div class="env-box">
+        <div class="env-back"></div>
+        <div class="env-fold-l"></div>
+        <div class="env-fold-r"></div>
+        <div class="env-fold-b"></div>
+        <div class="env-flap"></div>
+      </div>
+    </div>
+
+    <div class="env-tap-hint">탭해서 열어봐요</div>
+  </div>
+
+  <!-- Phase 2: Letter screen -->
+  <div id="letter-screen">
+    <div class="letter-inner">
+      <div class="letter-hero">
+        <div class="letter-hero-badge">노원구꿈드림 환경동아리</div>
+        <div class="letter-hero-title">지구를<br>시언하게</div>
+      </div>
+
+      <!-- 동아리 사진: 준비되면 img 주석 해제, placeholder div 제거 -->
+      <div class="letter-card">
+        <div class="letter-ph letter-ph-photo">
+          <div class="letter-ph-icon">📸</div>
+          <div class="letter-ph-text">동아리 사진이 들어와요</div>
+          <div class="letter-ph-sub">이미지 교체 가능</div>
+        </div>
+        <!-- <img src="img/club-photo.jpg" alt="동아리 사진"> -->
+      </div>
+
+      <!-- 손편지: 준비되면 img 주석 해제, placeholder div 제거 -->
+      <div class="letter-card">
+        <div class="letter-ph letter-ph-letter">
+          <div class="letter-ph-icon">✏️</div>
+          <div class="letter-ph-text">손편지가 들어와요</div>
+          <div class="letter-ph-sub">이미지 교체 가능</div>
+        </div>
+        <!-- <img src="img/letter.jpg" alt="손편지"> -->
+      </div>
+
+      <div class="letter-cta-area">
+        <button class="letter-cta-btn" id="letter-cta-btn">미션 보러 가기 →</button>
+        <button class="letter-skip-btn" id="letter-skip-btn">건너뛰기</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════════════
@@ -1061,7 +1198,6 @@
 const SUPABASE_URL      = 'https://oyickjksxfjzzrlqswma.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_SrTFw1w5IJpq3uhjK6ri4Q_Spo8Zp61';
 const ADMIN_PASSWORD    = '1388';
-const SLIDE_DURATION    = 5000; // 슬라이드당 ms
 
 // ══════════════════════════════════════════════
 // [교체 가능] 갤러리 데이터
@@ -1144,140 +1280,34 @@ function toast(msg) {
 }
 
 // ══════════════════════════════════════════════
-// STORY
+// INTRO — 봉투 언박싱
 // ══════════════════════════════════════════════
-const SLIDES = ['hero','letter','mission','join'];
-let curSlide = 0;
-let slideTO  = null;
-
 function initStory() {
-  if (localStorage.getItem('story_done') || window.location.hash === '#admin') { startApp(false); return; }
-
-  // build progress segments
-  const prog = document.getElementById('s-progress');
-  SLIDES.forEach((_, i) => {
-    const seg = document.createElement('div');
-    seg.className = 's-seg';
-    seg.id = `ss${i}`;
-    seg.innerHTML = '<div class="s-seg-fill"></div>';
-    prog.appendChild(seg);
-  });
-
-  document.getElementById('s-skip').addEventListener('click', () => startApp(true));
-
-  // tap to advance / go back + swipe support
-  const sCont = document.getElementById('s-content');
-  let _sx = 0;
-  sCont.addEventListener('touchstart', e => { _sx = e.touches[0].clientX; }, { passive: true });
-  sCont.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - _sx;
-    if (Math.abs(dx) > 40) { goSlide(dx < 0 ? curSlide + 1 : curSlide - 1); return; }
-  }, { passive: true });
-  sCont.addEventListener('click', e => {
-    if (e.target.closest('button')) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const ratio = (e.clientX - rect.left) / rect.width;
-    if (ratio < 0.33) goSlide(curSlide - 1);
-    else goSlide(curSlide + 1);
-  });
-
-  goSlide(0);
-}
-
-function goSlide(idx) {
-  clearTimeout(slideTO);
-
-  if (idx >= SLIDES.length) { startApp(true); return; }
-  if (idx < 0) idx = 0;
-  curSlide = idx;
-
-  // update progress bars
-  SLIDES.forEach((_, i) => {
-    const seg  = document.getElementById(`ss${i}`);
-    const fill = seg.querySelector('.s-seg-fill');
-    seg.classList.remove('done','active');
-    fill.style.animation = 'none';
-    fill.offsetHeight; // reflow
-    if (i < idx) {
-      seg.classList.add('done');
-    } else if (i === idx) {
-      seg.classList.add('active');
-      fill.style.animation = `s-fill-anim ${SLIDE_DURATION}ms linear forwards`;
-    }
-  });
-
-  // background
-  const bgs = { hero:'#2c4a2e', letter:'#355838', mission:'#243c26', join:'#4a7a4e' };
-  document.getElementById('story').style.background = bgs[SLIDES[idx]];
-
-  // render slide content
-  renderSlide(SLIDES[idx]);
-
-  slideTO = setTimeout(() => goSlide(curSlide + 1), SLIDE_DURATION);
-}
-
-function renderSlide(type) {
-  const el = document.getElementById('s-content');
-  const inner = document.createElement('div');
-  inner.className = 's-inner';
-
-  const today = missions[todayIdx];
-
-  if (type === 'hero') {
-    inner.innerHTML = `
-      <div class="blob" style="width:260px;height:260px;background:#8fbc6a;top:-90px;left:-90px;position:absolute;animation-delay:0s"></div>
-      <div class="blob" style="width:180px;height:180px;background:#a8d080;bottom:-60px;right:-60px;position:absolute;animation-delay:-4s"></div>
-      <div style="position:relative;z-index:2">
-        <div class="s-badge">노원구꿈드림 환경동아리</div>
-        <div class="s-title">지구를<br>시언하게</div>
-        <div class="s-sub">저희가 어른들한테<br>부탁이 있어요</div>
-      </div>`;
-  } else if (type === 'letter') {
-    inner.innerHTML = `
-      <div class="s-badge" style="margin-bottom:20px">저희 한마디</div>
-      <div class="s-bubble">
-        <p class="s-bubble-text">
-          안녕하세요,<br>저희는 노원구 꿈드림 환경동아리예요.<br><br>
-          어른들이 조금만 바꿔주시면<br>
-          지구가 진짜 달라질 수 있다고 생각했어요.<br><br>
-          거창한 게 아니에요.<br>
-          오늘 하루, 미션 하나만요. 🌱
-        </p>
-        <div class="s-bubble-sign">— 환경동아리 일동</div>
-      </div>`;
-  } else if (type === 'mission') {
-    inner.innerHTML = `
-      <div class="s-badge" style="margin-bottom:14px">오늘의 미션</div>
-      <div style="font-family:'Nanum Pen Script',cursive;font-size:24px;color:#fff;margin-bottom:18px">요일마다 미션 하나씩 해봐요</div>
-      <div class="s-mission-preview">
-        <div class="s-mission-day">${today.day}</div>
-        <div class="s-mission-theme">${today.theme}</div>
-        ${today.list.slice(0,2).map((m,i)=>`
-          <div class="s-mission-row">
-            <div class="s-mission-num">${i+1}</div>
-            <div class="s-mission-text">${esc(m.t)}</div>
-          </div>`).join('')}
-      </div>`;
-  } else if (type === 'join') {
-    inner.innerHTML = `
-      <div class="s-badge" style="margin-bottom:16px">함께해요!</div>
-      <div class="s-steps">
-        <div class="s-step"><div class="s-step-num">1</div><div class="s-step-text">미션을 보고 하나 골라요</div></div>
-        <div class="s-step"><div class="s-step-num">2</div><div class="s-step-text">직접 따라해 봐요</div></div>
-        <div class="s-step"><div class="s-step-num">3</div><div class="s-step-text">사진 찍고 올리면 피드에 실려요 📸</div></div>
-      </div>
-      <button class="s-start-btn" id="s-start">시작하기 →</button>`;
-    setTimeout(() => {
-      document.getElementById('s-start')?.addEventListener('click', () => startApp(true));
-    }, 0);
+  if (localStorage.getItem('story_done') || window.location.hash === '#admin') {
+    startApp(false);
+    return;
   }
 
-  el.innerHTML = '';
-  el.appendChild(inner);
+  const envOuter     = document.getElementById('env-outer');
+  const envScreen    = document.getElementById('env-screen');
+  const letterScreen = document.getElementById('letter-screen');
+
+  function openEnvelope() {
+    if (envOuter.classList.contains('opening')) return;
+    envOuter.classList.add('opening');
+    setTimeout(() => {
+      envScreen.style.opacity = '0';
+      envScreen.style.pointerEvents = 'none';
+      letterScreen.classList.add('visible');
+    }, 720);
+  }
+
+  envScreen.addEventListener('click', openEnvelope);
+  document.getElementById('letter-cta-btn').addEventListener('click', () => startApp(true));
+  document.getElementById('letter-skip-btn').addEventListener('click', () => startApp(true));
 }
 
 function startApp(animate) {
-  clearTimeout(slideTO);
   localStorage.setItem('story_done', '1');
   const story = document.getElementById('story');
   const app   = document.getElementById('app');
@@ -1287,17 +1317,13 @@ function startApp(animate) {
 
   if (animate) {
     story.style.opacity = '0';
-    setTimeout(() => { story.style.display = 'none'; app.style.opacity = '1'; }, 400);
+    story.style.pointerEvents = 'none';
+    setTimeout(() => { story.style.display = 'none'; app.style.opacity = '1'; }, 500);
   } else {
     story.style.display = 'none';
     app.style.opacity = '1';
   }
 }
-
-// inject keyframe for story progress bar fill
-const styleSheet = document.createElement('style');
-styleSheet.textContent = `@keyframes s-fill-anim { from{width:0} to{width:100%} }`;
-document.head.appendChild(styleSheet);
 
 // ══════════════════════════════════════════════
 // APP
