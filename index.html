@@ -376,59 +376,81 @@
       border-radius: 50%;
       bottom: -60px; right: -40px;
     }
-    .tc-label { font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom: 6px; letter-spacing: 1px; font-weight: 500; }
+    .tc-label { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 10px; letter-spacing: 1px; font-weight: 500; }
+    .tc-emoji { font-size: 38px; margin-bottom: 8px; line-height: 1; }
     .tc-title {
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 34px; color: #fff; margin-bottom: 6px; line-height: 1.1;
+      font-size: 36px; color: #fff; margin-bottom: 4px; line-height: 1.1;
     }
-    .tc-theme { font-size: 13px; color: rgba(122,173,86,0.9); font-weight: 600; letter-spacing: 0.2px; }
+    .tc-theme { font-size: 13px; color: rgba(160,210,120,0.9); font-weight: 500; letter-spacing: 0.2px; }
 
     .day-tabs {
       display: flex; gap: 7px;
       overflow-x: auto; scrollbar-width: none;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
     .day-tabs::-webkit-scrollbar { display: none; }
     .day-tab {
       flex-shrink: 0;
-      padding: 8px 16px;
+      padding: 9px 17px;
       border-radius: 22px;
-      border: 1.5px solid #e0dbd3;
+      border: 1.5px solid #e2ddd5;
       background: #fff;
-      color: #888;
+      color: #aaa;
       font-size: 13px; font-family: 'Noto Sans KR', sans-serif; font-weight: 500;
-      cursor: pointer; transition: all 0.18s;
+      cursor: pointer; transition: all 0.2s;
     }
     .day-tab.active {
       background: var(--gd); border-color: var(--gd); color: #fff;
-      box-shadow: 0 4px 14px rgba(44,74,46,0.28);
+      box-shadow: 0 4px 16px rgba(44,74,46,0.28);
     }
 
     .mission-card {
       background: #fff;
       border-radius: 22px;
-      padding: 24px 20px;
+      overflow: hidden;
       box-shadow: var(--shadow-card);
     }
-    .mc-day { font-size: 10px; font-weight: 700; color: var(--gl); letter-spacing: 1.5px; margin-bottom: 4px; text-transform: uppercase; }
-    .mc-theme { font-size: 17px; font-weight: 700; color: var(--gd); margin-bottom: 18px; }
-    .mc-item { padding: 15px 0; border-top: 1px solid #f2ede7; }
-    .mc-item:first-of-type { border-top: none; padding-top: 0; }
-    .mc-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
-    .mc-num {
-      flex-shrink: 0; width: 22px; height: 22px;
-      background: linear-gradient(135deg, var(--gm), var(--gl));
-      border-radius: 50%;
-      text-align: center; line-height: 22px;
-      font-size: 10px; font-weight: 700; color: #fff; margin-top: 1px;
+    .mc-header {
+      background: var(--grad-hero);
+      padding: 20px 22px 18px;
+      position: relative;
+      overflow: hidden;
     }
-    .mc-text { font-size: 14px; line-height: 1.7; color: var(--td); }
+    .mc-header::after {
+      content: '';
+      position: absolute;
+      width: 140px; height: 140px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+      bottom: -50px; right: -30px;
+    }
+    .mc-theme {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 26px; color: #fff; line-height: 1.2;
+    }
+    .mc-body { padding: 6px 20px 18px; }
+    .mc-item {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 16px 0;
+      border-bottom: 1px solid #f3ede7;
+    }
+    .mc-item:last-child { border-bottom: none; }
+    .mc-num {
+      flex-shrink: 0; width: 24px; height: 24px;
+      background: linear-gradient(135deg, var(--gd), var(--gm));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: #fff;
+      margin-top: 2px;
+    }
+    .mc-content { flex: 1; }
+    .mc-text { font-size: 14px; line-height: 1.75; color: var(--td); margin-bottom: 6px; }
     .mc-comment {
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 19px; color: var(--tm);
-      padding: 4px 0 0 4px;
-      margin-left: 32px;
-      opacity: 0.85;
+      font-size: 18px; color: var(--tm);
+      opacity: 0.82;
+      padding-left: 2px;
     }
 
     /* ── FEED TAB ──────────────────────────── */
@@ -1305,10 +1327,14 @@ function initTabs() {
 // ── MISSIONS
 function initMissions() {
   const today = missions[todayIdx];
+  const emojiMatch = today.theme.match(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/u);
+  const todayEmoji = emojiMatch ? emojiMatch[0] : '🌿';
+  const todayThemeText = today.theme.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}]\s*/u, '');
   document.getElementById('today-card').innerHTML = `
-    <div class="tc-label">오늘의 미션</div>
+    <div class="tc-label">TODAY</div>
+    <div class="tc-emoji">${todayEmoji}</div>
     <div class="tc-title">${today.day}</div>
-    <div class="tc-theme">${today.theme}</div>`;
+    <div class="tc-theme">${todayThemeText}</div>`;
 
   const tabsEl = document.getElementById('day-tabs');
   dayNames.forEach((name, i) => {
@@ -1331,16 +1357,19 @@ function initMissions() {
     card.className = 'mission-card';
     card.style.display = i === todayIdx ? 'block' : 'none';
     card.innerHTML = `
-      <div class="mc-day">${d.day}</div>
-      <div class="mc-theme">${d.theme}</div>
-      ${d.list.map((m, j) => `
-        <div class="mc-item">
-          <div class="mc-row">
+      <div class="mc-header">
+        <div class="mc-theme">${d.theme}</div>
+      </div>
+      <div class="mc-body">
+        ${d.list.map((m, j) => `
+          <div class="mc-item">
             <div class="mc-num">${j+1}</div>
-            <div class="mc-text">${esc(m.t)}</div>
-          </div>
-          <div class="mc-comment">"${esc(m.c)}"</div>
-        </div>`).join('')}`;
+            <div class="mc-content">
+              <div class="mc-text">${esc(m.t)}</div>
+              <div class="mc-comment">${esc(m.c)}</div>
+            </div>
+          </div>`).join('')}
+      </div>`;
     container.appendChild(card);
   });
 }
