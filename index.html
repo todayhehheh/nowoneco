@@ -4,6 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>지구를 시언하게</title>
+
+  <!-- SEO / 카카오 공유 메타태그 -->
+  <meta name="description" content="노원구꿈드림 환경동아리가 만든 환경 실천 페이지예요. 오늘 미션 하나만 해봐요!">
+  <meta property="og:title" content="지구를 시언하게">
+  <meta property="og:description" content="저희가 어른들한테 부탁이 있어요. 오늘 미션 하나만 해봐요 🌱">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://todayhehheh.github.io/nowoneco/">
+  <meta name="theme-color" content="#2c4a2e">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="지구를 시언하게">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
@@ -700,6 +715,44 @@
       white-space: nowrap; pointer-events: none;
     }
     #toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* 라이트박스 */
+    #lightbox {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.92); z-index: 500;
+      align-items: center; justify-content: center;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img {
+      max-width: 95vw; max-height: 90dvh;
+      border-radius: 12px; object-fit: contain;
+    }
+    #lightbox-close {
+      position: absolute; top: 16px; right: 16px;
+      background: rgba(255,255,255,0.15); border: none;
+      color: #fff; font-size: 22px; width: 40px; height: 40px;
+      border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* 당겨서 새로고침 */
+    #ptr-indicator {
+      text-align: center; padding: 14px;
+      font-size: 13px; color: var(--tm);
+      height: 0; overflow: hidden;
+      transition: height 0.2s;
+    }
+    #ptr-indicator.visible { height: 44px; }
+
+    /* 이미지 로드 실패 placeholder */
+    .img-error {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: #e8ede8; font-size: 28px; border-radius: inherit;
+    }
+
+    /* 압축 중 표시 */
+    .compressing { opacity: 0.6; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -737,6 +790,7 @@
 
     <!-- 피드 -->
     <div id="tab-feed" class="tab-pane">
+      <div id="ptr-indicator">↓ 당겨서 새로고침</div>
       <div class="pane-pad">
         <div class="pane-heading">시민 여러분의 실천</div>
         <div class="pane-sub">승인된 사진들이에요</div>
@@ -897,6 +951,12 @@
   </div>
 </div>
 
+<!-- 라이트박스 -->
+<div id="lightbox">
+  <button id="lightbox-close">✕</button>
+  <img id="lightbox-img" alt="">
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -1010,9 +1070,16 @@ function initStory() {
 
   document.getElementById('s-skip').addEventListener('click', () => startApp(true));
 
-  // tap to advance / go back
-  document.getElementById('s-content').addEventListener('click', e => {
-    if (e.target.closest('button')) return; // let buttons handle themselves
+  // tap to advance / go back + swipe support
+  const sCont = document.getElementById('s-content');
+  let _sx = 0;
+  sCont.addEventListener('touchstart', e => { _sx = e.touches[0].clientX; }, { passive: true });
+  sCont.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - _sx;
+    if (Math.abs(dx) > 40) { goSlide(dx < 0 ? curSlide + 1 : curSlide - 1); return; }
+  }, { passive: true });
+  sCont.addEventListener('click', e => {
+    if (e.target.closest('button')) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const ratio = (e.clientX - rect.left) / rect.width;
     if (ratio < 0.33) goSlide(curSlide - 1);
@@ -1153,6 +1220,7 @@ function initApp() {
   initUpload();
   initAbout();
   initAdmin();
+  initPullToRefresh();
   loadPosts();
 }
 
@@ -1260,12 +1328,18 @@ function renderGalleryGrid(container, items) {
     const dateStr = item.activity_date
       ? `<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.45);color:#fff;font-size:10px;border-radius:6px;padding:2px 6px">${item.activity_date}</div>`
       : '';
-    el.innerHTML = item.image_url
-      ? `<img class="gallery-img" src="${item.image_url}" alt="${esc(item.caption)}" loading="lazy">
-         ${dateStr}
-         <div class="gallery-cap">${esc(item.caption)}</div>`
-      : `<div class="gallery-ph">${item._emoji || '🌿'}</div>
-         <div class="gallery-cap">${esc(item.caption)}</div>`;
+    if (item.image_url) {
+      el.innerHTML = `<img class="gallery-img" src="${item.image_url}" alt="${esc(item.caption)}" loading="lazy"
+        onerror="this.parentNode.innerHTML='<div class=\\'gallery-ph\\'>🌿</div>'">
+        ${dateStr}
+        <div class="gallery-cap">${esc(item.caption)}</div>`;
+      el.querySelector('.gallery-img').addEventListener('click', () => {
+        window._lightboxOpen && window._lightboxOpen(item.image_url);
+      });
+    } else {
+      el.innerHTML = `<div class="gallery-ph">${item._emoji || '🌿'}</div>
+        <div class="gallery-cap">${esc(item.caption)}</div>`;
+    }
     grid.appendChild(el);
   });
   container.innerHTML = '';
@@ -1295,7 +1369,10 @@ async function loadPosts() {
       card.className = 'post-card';
       card.innerHTML = `
         <div class="post-img-wrap">
-          ${post.image_url ? `<img class="post-img" src="${post.image_url}" alt="" loading="lazy">` : '🌿'}
+          ${post.image_url
+            ? `<img class="post-img" src="${post.image_url}" alt="" loading="lazy"
+                onerror="this.parentNode.innerHTML='<div class=\\'img-error\\'>🌿</div>'">`
+            : '<div class="img-error">🌿</div>'}
         </div>
         <div class="post-text">${esc(post.text)}</div>`;
       grid.appendChild(card);
@@ -1324,12 +1401,17 @@ function initUpload() {
 
   function closeSheet() { overlay.classList.remove('open'); }
 
-  fileInput.addEventListener('change', e => {
-    file = e.target.files[0];
-    if (!file) return;
+  fileInput.addEventListener('change', async e => {
+    const raw = e.target.files[0];
+    if (!raw) return;
+    // 10MB 초과 시 경고만 (압축 후 올라가므로 허용)
+    if (raw.size > 30 * 1024 * 1024) { toast('30MB 이하 파일만 선택해주세요.'); return; }
+    submitBtn.textContent = '이미지 준비 중...';
+    file = await compressImage(raw);
     prevImg.src = URL.createObjectURL(file);
     prevImg.style.display = 'block';
     hint.style.display = 'none';
+    submitBtn.textContent = '올리기';
     check();
   });
 
@@ -1344,8 +1426,7 @@ function initUpload() {
     if (!sb) { toast('Supabase 설정이 필요해요!'); return; }
     submitBtn.disabled = true; submitBtn.textContent = '올리는 중...';
     try {
-      const ext  = file.name.split('.').pop() || 'jpg';
-      const name = `${Date.now()}.${ext}`;
+      const name = `${Date.now()}.jpg`;
       const { error: se } = await sb.storage.from('post-images').upload(name, file, { cacheControl:'3600', upsert:false });
       if (se) throw se;
       const { data: ud } = sb.storage.from('post-images').getPublicUrl(name);
@@ -1360,7 +1441,7 @@ function initUpload() {
       toast('올렸어요! 검토 후 게시될 거예요 🌿');
     } catch(e) {
       console.error(e);
-      toast('오류가 났어요. 다시 시도해주세요 😅');
+      toast(friendlyError(e));
       submitBtn.disabled = false; submitBtn.textContent = '올리기';
     }
   });
@@ -1485,12 +1566,15 @@ function initGalleryAdmin() {
     toggle.textContent = open ? '＋ 새 활동 추가' : '✕ 닫기';
   });
 
-  fileInput.addEventListener('change', e => {
-    gFile = e.target.files[0];
-    if (!gFile) return;
-    preview.src = URL.createObjectURL(gFile);
+  fileInput.addEventListener('change', async e => {
+    const raw = e.target.files[0];
+    if (!raw) return;
+    preview.src = URL.createObjectURL(raw);
     preview.style.display = 'block';
     hint.style.display = 'none';
+    saveBtn.textContent = '이미지 준비 중...';
+    gFile = await compressImage(raw);
+    saveBtn.textContent = '저장하기';
     checkGalleryForm();
   });
 
@@ -1620,9 +1704,115 @@ function adjustCnt(delta, el) {
 }
 
 // ══════════════════════════════════════════════
+// 이미지 압축 (Canvas API)
+// ══════════════════════════════════════════════
+function compressImage(file, maxPx = 1280, quality = 0.82) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let { width: w, height: h } = img;
+        if (w > maxPx || h > maxPx) {
+          if (w > h) { h = Math.round(h * maxPx / w); w = maxPx; }
+          else        { w = Math.round(w * maxPx / h); h = maxPx; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        canvas.toBlob(blob => {
+          resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
+        }, 'image/jpeg', quality);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ══════════════════════════════════════════════
+// 오류 메시지 해석
+// ══════════════════════════════════════════════
+function friendlyError(e) {
+  const msg = (e?.message || e?.error_description || String(e)).toLowerCase();
+  if (msg.includes('row-level security') || msg.includes('rls'))
+    return 'Supabase 보안 정책 설정이 필요해요. SQL Editor에서 정책을 추가해주세요.';
+  if (msg.includes('bucket') || msg.includes('not found'))
+    return '저장소 버킷을 찾을 수 없어요. post-images 버킷이 있는지 확인해주세요.';
+  if (msg.includes('file size') || msg.includes('payload too large'))
+    return '파일이 너무 커요. 더 작은 사진을 선택해주세요.';
+  if (msg.includes('network') || msg.includes('fetch'))
+    return '인터넷 연결을 확인해주세요.';
+  if (msg.includes('duplicate') || msg.includes('unique'))
+    return '이미 올라간 파일이에요.';
+  return '오류가 났어요. 잠시 후 다시 시도해주세요.';
+}
+
+// ══════════════════════════════════════════════
+// 라이트박스
+// ══════════════════════════════════════════════
+function initLightbox() {
+  const lb     = document.getElementById('lightbox');
+  const lbImg  = document.getElementById('lightbox-img');
+  const lbClose = document.getElementById('lightbox-close');
+
+  function open(src) { lbImg.src = src; lb.classList.add('open'); }
+  function close()   { lb.classList.remove('open'); lbImg.src = ''; }
+
+  lbClose.addEventListener('click', close);
+  lb.addEventListener('click', e => { if (e.target === lb) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+  window._lightboxOpen = open;
+}
+
+// ══════════════════════════════════════════════
+// 당겨서 새로고침 (피드 탭)
+// ══════════════════════════════════════════════
+function initPullToRefresh() {
+  const pane = document.getElementById('tab-feed');
+  const indicator = document.getElementById('ptr-indicator');
+  let startY = 0, pulling = false;
+
+  pane.addEventListener('touchstart', e => {
+    if (pane.scrollTop === 0) { startY = e.touches[0].clientY; pulling = true; }
+  }, { passive: true });
+
+  pane.addEventListener('touchmove', e => {
+    if (!pulling) return;
+    const dist = e.touches[0].clientY - startY;
+    if (dist > 30) indicator.classList.add('visible');
+  }, { passive: true });
+
+  pane.addEventListener('touchend', async () => {
+    if (!pulling) return;
+    pulling = false;
+    if (indicator.classList.contains('visible')) {
+      indicator.textContent = '⟳ 새로고침 중...';
+      await loadPosts();
+      indicator.textContent = '✓ 완료!';
+      setTimeout(() => {
+        indicator.classList.remove('visible');
+        indicator.textContent = '↓ 당겨서 새로고침';
+      }, 800);
+    }
+  });
+}
+
+// ══════════════════════════════════════════════
+// 이미지 오류 처리 헬퍼
+// ══════════════════════════════════════════════
+function safeImg(src, alt = '') {
+  return `<img src="${src}" alt="${esc(alt)}" loading="lazy"
+    onerror="this.parentNode.innerHTML='<div class=\\'img-error\\'>🌿</div>'"
+    style="width:100%;height:100%;object-fit:cover">`;
+}
+
+// ══════════════════════════════════════════════
 // BOOT
 // ══════════════════════════════════════════════
 initStory();
+initLightbox();
 </script>
 </body>
 </html>
