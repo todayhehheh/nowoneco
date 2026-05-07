@@ -29,16 +29,16 @@
     :root {
       --gd: #2c4a2e;
       --gm: #4a7a4e;
-      --gl: #8fbc6a;
-      --cream: #f7f3ec;
-      --bg: #edeae4;
-      --td: #1a2e1b;
-      --tm: #5a7a5c;
+      --gl: #7aad56;
+      --cream: #faf7f2;
+      --bg: #f2efe8;
+      --td: #1e2e1f;
+      --tm: #6b8c6d;
       --nav-h: 64px;
-      --hdr-h: 56px;
-      --grad-hero: linear-gradient(145deg, #1e3820 0%, #3d6b40 100%);
-      --shadow-card: 0 4px 20px rgba(44,74,46,0.09), 0 1px 4px rgba(44,74,46,0.05);
-      --shadow-hero: 0 8px 28px rgba(44,74,46,0.22), 0 2px 6px rgba(44,74,46,0.1);
+      --hdr-h: 58px;
+      --grad-hero: linear-gradient(150deg, #1a3320 0%, #2e5c32 60%, #3d6b40 100%);
+      --shadow-card: 0 2px 16px rgba(44,74,46,0.07), 0 1px 3px rgba(0,0,0,0.04);
+      --shadow-hero: 0 10px 32px rgba(44,74,46,0.24), 0 2px 8px rgba(44,74,46,0.1);
     }
 
     html { height: 100%; }
@@ -256,39 +256,40 @@
     #app-hdr {
       flex-shrink: 0;
       height: var(--hdr-h);
-      background: rgba(255,255,255,0.88);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-      box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 16px rgba(44,74,46,0.06);
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.03), 0 4px 20px rgba(44,74,46,0.05);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 18px;
+      padding: 0 20px;
       position: relative;
       z-index: 10;
     }
     .hdr-logo {
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 25px;
+      font-size: 26px;
       color: var(--gd);
       line-height: 1;
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: center; gap: 7px;
     }
     .hdr-logo-dot {
-      width: 8px; height: 8px;
+      width: 7px; height: 7px;
       background: var(--gl);
       border-radius: 50%;
       flex-shrink: 0;
       margin-bottom: 1px;
-      box-shadow: 0 0 0 3px rgba(143,188,106,0.22);
+      box-shadow: 0 0 0 3px rgba(122,173,86,0.2);
     }
     .hdr-date {
       font-size: 12px; font-weight: 500;
-      color: var(--tm);
-      background: rgba(143,188,106,0.15);
-      border-radius: 12px;
-      padding: 5px 11px;
+      color: var(--gd);
+      background: rgba(122,173,86,0.12);
+      border-radius: 20px;
+      padding: 5px 13px;
+      letter-spacing: -0.2px;
     }
 
     /* Main scrollable area */
@@ -306,20 +307,21 @@
       -webkit-overflow-scrolling: touch;
     }
     .tab-pane.active { display: block; }
-    .pane-pad { padding: 18px 17px 82px; }
+    .pane-pad { padding: 20px 18px 90px; }
 
     /* Section heading inside panes */
     .pane-heading {
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 30px;
+      font-size: 34px;
       color: var(--gd);
-      margin-bottom: 2px;
-      letter-spacing: -0.3px;
+      margin-bottom: 3px;
+      letter-spacing: -0.5px;
     }
     .pane-sub {
-      font-size: 12px;
+      font-size: 13px;
       color: var(--tm);
-      margin-bottom: 18px;
+      margin-bottom: 20px;
+      font-weight: 400;
     }
 
     /* Bottom Nav */
@@ -351,9 +353,9 @@
     /* ── MISSION TAB ─────────────────────────── */
     .today-card {
       background: var(--grad-hero);
-      border-radius: 22px;
-      padding: 22px 20px 26px;
-      margin-bottom: 16px;
+      border-radius: 24px;
+      padding: 26px 22px 30px;
+      margin-bottom: 18px;
       position: relative;
       overflow: hidden;
       box-shadow: var(--shadow-hero);
@@ -361,181 +363,178 @@
     .today-card::before {
       content: '';
       position: absolute;
-      width: 100px; height: 100px;
-      background: rgba(143,188,106,0.14);
+      width: 120px; height: 120px;
+      background: rgba(122,173,86,0.12);
       border-radius: 50%;
-      top: -28px; left: -28px;
+      top: -30px; left: -30px;
     }
     .today-card::after {
       content: '';
       position: absolute;
-      width: 160px; height: 160px;
-      background: rgba(255,255,255,0.05);
+      width: 180px; height: 180px;
+      background: rgba(255,255,255,0.04);
       border-radius: 50%;
-      bottom: -55px; right: -35px;
+      bottom: -60px; right: -40px;
     }
-    .tc-label { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 4px; letter-spacing: 0.5px; }
+    .tc-label { font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom: 6px; letter-spacing: 1px; font-weight: 500; }
     .tc-title {
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 28px; color: #fff; margin-bottom: 4px;
+      font-size: 34px; color: #fff; margin-bottom: 6px; line-height: 1.1;
     }
-    .tc-theme { font-size: 13px; color: var(--gl); font-weight: 600; }
+    .tc-theme { font-size: 13px; color: rgba(122,173,86,0.9); font-weight: 600; letter-spacing: 0.2px; }
 
     .day-tabs {
-      display: flex; gap: 6px;
+      display: flex; gap: 7px;
       overflow-x: auto; scrollbar-width: none;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .day-tabs::-webkit-scrollbar { display: none; }
     .day-tab {
       flex-shrink: 0;
-      padding: 7px 15px;
-      border-radius: 20px;
-      border: 1.5px solid #dbd6cf;
+      padding: 8px 16px;
+      border-radius: 22px;
+      border: 1.5px solid #e0dbd3;
       background: #fff;
-      color: var(--td);
+      color: #888;
       font-size: 13px; font-family: 'Noto Sans KR', sans-serif; font-weight: 500;
       cursor: pointer; transition: all 0.18s;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
     .day-tab.active {
       background: var(--gd); border-color: var(--gd); color: #fff;
-      box-shadow: 0 3px 12px rgba(44,74,46,0.28);
+      box-shadow: 0 4px 14px rgba(44,74,46,0.28);
     }
 
     .mission-card {
       background: #fff;
-      border-radius: 20px;
-      padding: 22px 18px;
+      border-radius: 22px;
+      padding: 24px 20px;
       box-shadow: var(--shadow-card);
     }
-    .mc-day { font-size: 11px; font-weight: 700; color: var(--gl); letter-spacing: 1.2px; margin-bottom: 3px; }
-    .mc-theme { font-size: 16px; font-weight: 700; color: var(--gd); margin-bottom: 16px; }
-    .mc-item { padding: 13px 0; border-top: 1px solid #f0ede8; }
+    .mc-day { font-size: 10px; font-weight: 700; color: var(--gl); letter-spacing: 1.5px; margin-bottom: 4px; text-transform: uppercase; }
+    .mc-theme { font-size: 17px; font-weight: 700; color: var(--gd); margin-bottom: 18px; }
+    .mc-item { padding: 15px 0; border-top: 1px solid #f2ede7; }
     .mc-item:first-of-type { border-top: none; padding-top: 0; }
-    .mc-row { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 6px; }
+    .mc-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
     .mc-num {
-      flex-shrink: 0; width: 20px; height: 20px;
-      background: var(--gl); border-radius: 50%;
-      text-align: center; line-height: 20px;
-      font-size: 10px; font-weight: 700; color: #fff; margin-top: 2px;
+      flex-shrink: 0; width: 22px; height: 22px;
+      background: linear-gradient(135deg, var(--gm), var(--gl));
+      border-radius: 50%;
+      text-align: center; line-height: 22px;
+      font-size: 10px; font-weight: 700; color: #fff; margin-top: 1px;
     }
-    .mc-text { font-size: 13.5px; line-height: 1.65; color: var(--td); }
+    .mc-text { font-size: 14px; line-height: 1.7; color: var(--td); }
     .mc-comment {
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 18px; color: var(--tm);
-      padding: 4px 10px 4px 10px;
-      margin-left: 28px;
-      background: #f5f3ee;
-      border-radius: 8px;
-      border-left: 2px solid rgba(143,188,106,0.5);
+      font-size: 19px; color: var(--tm);
+      padding: 4px 0 0 4px;
+      margin-left: 32px;
+      opacity: 0.85;
     }
 
     /* ── FEED TAB ──────────────────────────── */
     .posts-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 11px;
+      display: flex; flex-direction: column; gap: 16px;
     }
     .post-card {
-      border-radius: 16px; overflow: hidden;
+      border-radius: 20px; overflow: hidden;
       background: #fff;
       box-shadow: var(--shadow-card);
-      transition: transform 0.12s;
+      transition: transform 0.13s;
     }
-    .post-card:active { transform: scale(0.97); }
+    .post-card:active { transform: scale(0.985); }
     .post-img-wrap {
       overflow: hidden;
-      background: #f0f4f0;
+      background: #f4f6f4;
       display: flex; align-items: center; justify-content: center;
-      font-size: 28px;
-      max-height: 420px;
     }
-    .post-img { width: 100%; height: auto; display: block; object-fit: contain; }
+    .post-img { width: 100%; height: auto; display: block; }
     .post-text {
-      padding: 9px 10px 10px;
+      padding: 12px 14px 14px;
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 16px; line-height: 1.45; color: var(--td);
+      font-size: 19px; line-height: 1.5; color: var(--td);
     }
     .board-empty {
-      text-align: center; padding: 60px 20px;
-      color: var(--tm); font-size: 14px; line-height: 1.85;
+      text-align: center; padding: 72px 20px;
+      color: var(--tm); font-size: 14px; line-height: 2;
     }
-    .board-empty-icon { font-size: 44px; margin-bottom: 12px; }
+    .board-empty-icon { font-size: 48px; margin-bottom: 14px; }
 
-    /* FAB */
     .feed-upload-btn {
       display: block; width: 100%;
-      padding: 13px;
-      background: var(--gd); color: #fff;
-      border: none; border-radius: 14px;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--gd) 0%, var(--gm) 100%);
+      color: #fff;
+      border: none; border-radius: 16px;
       font-size: 15px; font-weight: 700;
       font-family: 'Noto Sans KR', sans-serif;
-      cursor: pointer; margin-bottom: 16px;
-      box-shadow: 0 4px 14px rgba(44,74,46,0.22);
-      transition: opacity 0.15s;
+      cursor: pointer; margin-bottom: 18px;
+      box-shadow: 0 4px 16px rgba(44,74,46,0.28);
+      transition: opacity 0.15s, transform 0.12s;
+      letter-spacing: 0.2px;
     }
-    .feed-upload-btn:active { opacity: 0.82; }
+    .feed-upload-btn:active { opacity: 0.88; transform: scale(0.98); }
 
     /* ── GALLERY TAB ─────────────────────────── */
-    .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+    .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .gallery-item {
-      border-radius: 16px; overflow: hidden; position: relative;
+      border-radius: 18px; overflow: hidden; position: relative;
       cursor: pointer;
       box-shadow: var(--shadow-card);
-      transition: transform 0.12s;
-      background: #f0f4f0;
+      transition: transform 0.13s;
+      background: #eef2ee;
     }
-    .gallery-item:active { transform: scale(0.96); }
+    .gallery-item:active { transform: scale(0.965); }
     .gallery-ph {
       width: 100%; aspect-ratio: 1;
       display: flex; align-items: center; justify-content: center;
       font-size: 34px;
-      background: linear-gradient(135deg, #b4d0b6, #8fbc6a);
+      background: linear-gradient(135deg, #c8deca, #9ecb7c);
     }
     .gallery-img { width: 100%; height: auto; display: block; }
     .gallery-cap {
       position: absolute; bottom: 0; left: 0; right: 0;
-      padding: 8px 10px;
-      background: linear-gradient(transparent, rgba(18,44,20,0.7));
+      padding: 20px 10px 10px;
+      background: linear-gradient(transparent, rgba(14,36,16,0.72));
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 16px; color: #fff; line-height: 1.2;
+      font-size: 17px; color: #fff; line-height: 1.3;
     }
 
     /* ── ABOUT TAB ────────────────────────────── */
     .about-hero {
       background: var(--grad-hero);
-      border-radius: 22px;
-      padding: 30px 22px;
+      border-radius: 24px;
+      padding: 34px 24px;
       text-align: center;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       box-shadow: var(--shadow-hero);
     }
     .about-title {
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 30px; color: #fff; margin-bottom: 16px;
+      font-size: 34px; color: #fff; margin-bottom: 18px;
     }
     .about-text {
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 21px; color: rgba(255,255,255,0.82); line-height: 1.88;
+      font-size: 22px; color: rgba(255,255,255,0.8); line-height: 1.9;
     }
     .about-chip {
       display: inline-block;
-      border: 1px solid rgba(143,188,106,0.4);
-      color: var(--gl);
-      border-radius: 20px; padding: 6px 16px;
-      font-size: 12px; margin-top: 18px;
+      border: 1px solid rgba(122,173,86,0.45);
+      color: rgba(122,173,86,0.9);
+      border-radius: 20px; padding: 7px 18px;
+      font-size: 12px; margin-top: 20px; letter-spacing: 0.3px;
     }
     .about-row {
       background: #fff;
-      border-radius: 16px;
-      padding: 16px 18px;
+      border-radius: 18px;
+      padding: 17px 20px;
       display: flex; align-items: center; justify-content: space-between;
       box-shadow: var(--shadow-card);
       cursor: pointer;
       font-size: 14px; color: var(--td);
-      transition: transform 0.12s;
+      transition: transform 0.13s;
     }
     .about-row:active { transform: scale(0.98); }
-    .about-row + .about-row { margin-top: 8px; }
+    .about-row + .about-row { margin-top: 10px; }
     .about-row-icon { font-size: 18px; color: var(--tm); }
 
     /* ══ UPLOAD SHEET ═══════════════════════════ */
@@ -720,22 +719,21 @@
     }
     /* 갤러리 연도 서브탭 */
     .gallery-year-tabs {
-      display: flex; gap: 7px; margin-bottom: 16px;
+      display: flex; gap: 7px; margin-bottom: 18px;
     }
     .gallery-year-tab {
       padding: 8px 20px;
-      border-radius: 20px;
-      border: 1.5px solid #dbd6cf;
+      border-radius: 22px;
+      border: 1.5px solid #e0dbd3;
       background: #fff;
       font-size: 13px; font-weight: 500;
       font-family: 'Noto Sans KR', sans-serif;
       cursor: pointer; transition: all 0.18s;
-      color: var(--td);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      color: #888;
     }
     .gallery-year-tab.active {
       background: var(--gd); border-color: var(--gd); color: #fff;
-      box-shadow: 0 3px 12px rgba(44,74,46,0.28);
+      box-shadow: 0 4px 14px rgba(44,74,46,0.26);
     }
 
     .gallery-empty {
