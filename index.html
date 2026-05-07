@@ -195,13 +195,10 @@
       50%      { opacity: 0.9; }
     }
 
-    /* ── Phase 2: Letter screen */
+    /* ── Phase 2: 슬라이드 화면 */
     #letter-screen {
       position: absolute;
       inset: 0;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      background: var(--bg);
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.45s ease;
@@ -209,117 +206,94 @@
     }
     #letter-screen.visible { opacity: 1; pointer-events: auto; }
 
-    .letter-inner {
-      display: flex;
-      flex-direction: column;
-      min-height: 100%;
-      padding-bottom: 48px;
-    }
-
-    .letter-hero {
+    .slide-screen {
+      position: absolute;
+      inset: 0;
       background: var(--grad-hero);
-      padding: 52px 24px 44px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-    .letter-hero-badge {
-      display: inline-block;
-      border: 1px solid rgba(143,188,106,0.45);
-      color: var(--gl);
-      border-radius: 20px;
-      padding: 4px 14px;
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      margin-bottom: 14px;
-    }
-    .letter-hero-title {
-      font-family: 'Nanum Pen Script', cursive;
-      font-size: 48px;
-      color: #fff;
-      line-height: 1.2;
-    }
-
-    .letter-card {
-      margin: -22px 18px 0;
-      background: #fff;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 6px 28px rgba(44,74,46,0.12);
-      position: relative;
-      z-index: 2;
-    }
-    .letter-card + .letter-card { margin-top: 16px; z-index: 1; }
-    .letter-card img { width: 100%; height: auto; display: block; }
-
-    .letter-ph {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 24px;
+      padding: 52px 22px 36px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
     }
-    .letter-ph-photo {
-      aspect-ratio: 4/3;
-      background: linear-gradient(135deg, #ddeedd, #c8dfc8);
+    .slide-screen.active { opacity: 1; pointer-events: auto; }
+
+    .slide-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+      flex-shrink: 0;
     }
-    .letter-ph-letter {
-      aspect-ratio: 3/4;
-      background: linear-gradient(160deg, #fffdf6 0%, #faf3e0 100%);
-      position: relative;
+
+    .slide-photo-wrap {
+      flex: 1;
+      width: 100%;
+      border-radius: 22px;
       overflow: hidden;
+      box-shadow: 0 10px 36px rgba(0,0,0,0.3);
+      display: flex;
     }
-    .letter-ph-letter::before {
+    .slide-photo-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+
+    .slide-ph {
+      flex: 1; width: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 14px;
+    }
+    .slide-ph-photo { background: linear-gradient(135deg, #ddeedd, #c6dfc6); }
+    .slide-ph-letter {
+      background: linear-gradient(160deg, #fffdf6 0%, #faf3e0 100%);
+      position: relative; overflow: hidden;
+    }
+    .slide-ph-letter::before {
       content: '';
-      position: absolute;
-      inset: 20px;
+      position: absolute; inset: 0;
       background: repeating-linear-gradient(
         transparent, transparent 29px,
         rgba(180,150,90,0.14) 29px, rgba(180,150,90,0.14) 30px
       );
     }
-    .letter-ph-icon { font-size: 38px; opacity: 0.45; position: relative; z-index: 1; }
-    .letter-ph-text {
+    .slide-ph-icon { font-size: 48px; opacity: 0.4; position: relative; z-index: 1; }
+    .slide-ph-text {
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 20px;
-      color: var(--gm);
-      opacity: 0.7;
-      position: relative;
-      z-index: 1;
+      font-size: 24px; color: var(--gm);
+      opacity: 0.7; position: relative; z-index: 1;
     }
-    .letter-ph-sub { font-size: 11px; color: #bbb; position: relative; z-index: 1; }
 
-    .letter-cta-area {
-      padding: 28px 18px 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
+    .slide-hint {
+      flex-shrink: 0;
+      margin-top: 20px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      animation: hint-blink 2.2s ease-in-out infinite;
     }
-    .letter-cta-btn {
+
+    .slide-start-btn {
+      flex-shrink: 0;
+      margin-top: 20px;
       width: 100%;
-      padding: 18px;
-      background: var(--gd);
-      color: #fff;
+      padding: 17px;
+      background: #fff;
+      color: var(--gd);
       border: none;
       border-radius: 18px;
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 16px; font-weight: 700;
       font-family: 'Noto Sans KR', sans-serif;
       cursor: pointer;
-      box-shadow: 0 6px 20px rgba(44,74,46,0.25);
-      transition: transform 0.12s, box-shadow 0.12s;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.16);
+      transition: transform 0.12s;
     }
-    .letter-cta-btn:active { transform: scale(0.97); box-shadow: 0 2px 10px rgba(44,74,46,0.15); }
-    .letter-skip-btn {
-      font-size: 12px;
-      color: var(--tm);
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-family: 'Noto Sans KR', sans-serif;
-      padding: 4px 8px;
-    }
+    .slide-start-btn:active { transform: scale(0.97); }
 
     /* ══ APP ════════════════════════════════════════ */
     #app {
@@ -951,38 +925,32 @@
     <div class="env-tap-hint">탭해서 열어봐요</div>
   </div>
 
-  <!-- Phase 2: Letter screen -->
+  <!-- Phase 2: 슬라이드 화면 -->
   <div id="letter-screen">
-    <div class="letter-inner">
-      <div class="letter-hero">
-        <div class="letter-hero-badge">노원구꿈드림 환경동아리</div>
-        <div class="letter-hero-title">지구를<br>시언하게</div>
-      </div>
-
-      <!-- 동아리 사진: 준비되면 img 주석 해제, placeholder div 제거 -->
-      <div class="letter-card">
-        <div class="letter-ph letter-ph-photo">
-          <div class="letter-ph-icon">📸</div>
-          <div class="letter-ph-text">동아리 사진이 들어와요</div>
-          <div class="letter-ph-sub">이미지 교체 가능</div>
+    <!-- Slide 1: 동아리 사진 -->
+    <div class="slide-screen active" id="slide-1">
+      <div class="slide-label">동아리 사진</div>
+      <div class="slide-photo-wrap">
+        <div class="slide-ph slide-ph-photo">
+          <div class="slide-ph-icon">📸</div>
+          <div class="slide-ph-text">동아리 사진이 들어와요</div>
         </div>
         <!-- <img src="img/club-photo.jpg" alt="동아리 사진"> -->
       </div>
+      <div class="slide-hint">탭해서 계속</div>
+    </div>
 
-      <!-- 손편지: 준비되면 img 주석 해제, placeholder div 제거 -->
-      <div class="letter-card">
-        <div class="letter-ph letter-ph-letter">
-          <div class="letter-ph-icon">✏️</div>
-          <div class="letter-ph-text">손편지가 들어와요</div>
-          <div class="letter-ph-sub">이미지 교체 가능</div>
+    <!-- Slide 2: 손편지 -->
+    <div class="slide-screen" id="slide-2">
+      <div class="slide-label">아이들의 손편지</div>
+      <div class="slide-photo-wrap">
+        <div class="slide-ph slide-ph-letter">
+          <div class="slide-ph-icon">✏️</div>
+          <div class="slide-ph-text">손편지가 들어와요</div>
         </div>
         <!-- <img src="img/letter.jpg" alt="손편지"> -->
       </div>
-
-      <div class="letter-cta-area">
-        <button class="letter-cta-btn" id="letter-cta-btn">미션 보러 가기 →</button>
-        <button class="letter-skip-btn" id="letter-skip-btn">건너뛰기</button>
-      </div>
+      <button class="slide-start-btn" id="slide-start-btn">미션 보러 가기 →</button>
     </div>
   </div>
 </div>
@@ -1291,6 +1259,8 @@ function initStory() {
   const envOuter     = document.getElementById('env-outer');
   const envScreen    = document.getElementById('env-screen');
   const letterScreen = document.getElementById('letter-screen');
+  const slide1       = document.getElementById('slide-1');
+  const slide2       = document.getElementById('slide-2');
 
   function openEnvelope() {
     if (envOuter.classList.contains('opening')) return;
@@ -1302,9 +1272,15 @@ function initStory() {
     }, 720);
   }
 
+  function goSlide2(e) {
+    if (e.target.closest('button')) return;
+    slide1.classList.remove('active');
+    slide2.classList.add('active');
+  }
+
   envScreen.addEventListener('click', openEnvelope);
-  document.getElementById('letter-cta-btn').addEventListener('click', () => startApp(true));
-  document.getElementById('letter-skip-btn').addEventListener('click', () => startApp(true));
+  slide1.addEventListener('click', goSlide2);
+  document.getElementById('slide-start-btn').addEventListener('click', () => startApp(true));
 }
 
 function startApp(animate) {
