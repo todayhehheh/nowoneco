@@ -1080,37 +1080,37 @@ const galleryItems = [
 // [교체 가능] 요일별 미션 데이터 (0=월 … 6=일)
 // ══════════════════════════════════════════════
 const missions = [
-  { day:'월요일', theme:'⚡ 전기 아껴 쓰기', img:'img/001.png', list:[
+  { day:'월요일', theme:'전기 아껴 쓰기', img:'img/001.png', list:[
     { t:'안 보는 TV 플러그, 뽑아주세요. 전기가 몰래 새고 있어요',            c:'플러그 뽑는 데 3초도 안 걸려요' },
     { t:'스마트폰이나 모니터 밝기를 조금만 낮춰주세요. 눈도 덜 피로해요',     c:'저도 해봤는데 배터리도 더 오래 가요' },
     { t:'빈 방이나 화장실 나올 때 꼭 불 꺼주세요',                           c:'불 켜진 빈 방이 마음에 걸렸어요' },
   ]},
-  { day:'화요일', theme:'🥤 일회용품 거절하기', img:'img/002.png', list:[
+  { day:'화요일', theme:'일회용품 거절하기', img:'img/002.png', list:[
     { t:'배달 시킬 때 일회용 수저 빼달라고 해주세요. 집에 있잖아요',          c:'체크 하나면 되는데 안 했던 게 미안해졌어요' },
     { t:'카페에서 텀블러 내밀어 보세요. 처음엔 어색해도 금방 익숙해져요',     c:'텀블러 쓰면 음료도 더 오래 차갑더라고요' },
     { t:'마트나 편의점 갈 때 가방 하나 챙겨 나가주세요',                     c:'저는 현관에 가방 걸어뒀어요' },
   ]},
-  { day:'수요일', theme:'♻️ 제대로 분리수거 하기', img:'img/003.png', list:[
+  { day:'수요일', theme:'제대로 분리수거 하기', img:'img/003.png', list:[
     { t:'생수병 라벨 뜯고 찌그러뜨려서 버려주세요. 저도 해봤는데 쉬워요',    c:'라벨 뜯는 거 생각보다 재밌었어요' },
     { t:'배달 용기 양념 닦아내고 물로 한 번만 헹궈서 버려주세요',            c:'조금만 신경 쓰면 되는 거였어요' },
     { t:'택배 박스 테이프랑 운송장 스티커 뜯어내고 버려주세요',              c:'안 뜯으면 재활용이 안 된대요' },
   ]},
-  { day:'목요일', theme:'🚶 가까운 거리는 걷기', img:'img/004.png', list:[
+  { day:'목요일', theme:'가까운 거리는 걷기', img:'img/004.png', list:[
     { t:'3층 이하는 계단으로 올라가 주세요. 엘리베이터 저한테 양보해 주세요', c:'계단 오르면서 숨찼는데 기분은 좋았어요' },
     { t:'한두 정거장 거리는 걸어가 주세요. 지구한테도 몸에도 좋아요',        c:'걸으면서 주변을 더 많이 보게 됐어요' },
     { t:'오늘 타는 버스나 지하철, 한 정거장만 먼저 내려서 걸어봐 주세요',    c:'처음엔 귀찮았는데 이제 더 좋아요' },
   ]},
-  { day:'금요일', theme:'🍚 음식 남기지 않기', img:'img/005.png', list:[
+  { day:'금요일', theme:'음식 남기지 않기', img:'img/005.png', list:[
     { t:'안 먹는 밑반찬은 처음부터 빼달라고 말해주세요. 버려지는 게 아까워요', c:'말하기 어색할 수 있는데 해보면 괜찮아요' },
     { t:'밥 먹을 만큼만 그릇에 덜어서 먹어주세요',                           c:'남기면 괜히 죄책감이 들더라고요' },
     { t:'냉장고 유통기한 다 되어가는 것부터 먼저 꺼내 먹어주세요',           c:'냉장고 정리도 되고 일석이조예요' },
   ]},
-  { day:'토요일', theme:'💧 물 낭비 줄이기', img:'img/006.png', list:[
+  { day:'토요일', theme:'물 낭비 줄이기', img:'img/006.png', list:[
     { t:'양치하는 동안 물 잠가주세요. 저 나중에 마셔야 해요',                c:'양치컵 쓰면 훨씬 편해요' },
     { t:'샴푸나 비누칠 할 때 샤워기 잠깐 꺼두세요',                          c:'해보면 생각보다 안 불편해요' },
     { t:'설거지할 때 물 받아두고 한꺼번에 씻어주세요',                       c:'물 쓰는 양이 눈에 띄게 줄었어요' },
   ]},
-  { day:'일요일', theme:'🌿 일주일 돌아보며 쉬어가기', img:'img/007.png', list:[
+  { day:'일요일', theme:'일주일 돌아보며 쉬어가기', img:'img/007.png', list:[
     { t:'이번 주 미션 중 가장 쉬웠던 것 하나를 나의 평생 습관으로 정해보세요', c:'저는 불 끄기가 제일 쉬웠어요' },
     { t:'환경을 위해 노력한 순간을 가족이나 친구에게 이야기해 보세요',        c:'말하고 나니까 더 뿌듯했어요' },
     { t:'오늘은 새 미션 없이, 내가 정한 습관 하나만 편안하게 지켜보며 쉬어요', c:'쉬어가는 날도 필요해요' },
@@ -1326,7 +1326,7 @@ function initTabs() {
 // ── MISSIONS
 function initMissions() {
   const today = missions[todayIdx];
-  const todayThemeText = today.theme.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}]\s*/u, '');
+  const todayThemeText = today.theme;
   document.getElementById('today-card').innerHTML = `
     <div class="tc-label">TODAY</div>
     <div class="tc-inner">
@@ -1357,10 +1357,9 @@ function initMissions() {
     const card = document.createElement('div');
     card.className = 'mission-card';
     card.style.display = i === todayIdx ? 'block' : 'none';
-    const themeText = d.theme.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}]\s*/u, '');
     card.innerHTML = `
       <div class="mc-header">
-        <div class="mc-theme">${themeText}</div>
+        <div class="mc-theme">${d.theme}</div>
       </div>
       <div class="mc-body">
         ${d.list.map((m, j) => `
