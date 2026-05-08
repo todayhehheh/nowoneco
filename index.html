@@ -27,18 +27,18 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --gd: #2c4a2e;
-      --gm: #4a7a4e;
-      --gl: #7aad56;
-      --cream: #faf7f2;
-      --bg: #f2efe8;
-      --td: #1e2e1f;
-      --tm: #6b8c6d;
+      --gd: #1c3a34;
+      --gm: #2e6350;
+      --gl: #5aaa80;
+      --cream: #f3f7f5;
+      --bg: #e6edea;
+      --td: #172820;
+      --tm: #4a7060;
       --nav-h: 64px;
       --hdr-h: 58px;
-      --grad-hero: linear-gradient(150deg, #1a3320 0%, #2e5c32 60%, #3d6b40 100%);
-      --shadow-card: 0 2px 16px rgba(44,74,46,0.07), 0 1px 3px rgba(0,0,0,0.04);
-      --shadow-hero: 0 10px 32px rgba(44,74,46,0.24), 0 2px 8px rgba(44,74,46,0.1);
+      --grad-hero: linear-gradient(150deg, #0d2220 0%, #1c3a34 55%, #245a46 100%);
+      --shadow-card: 0 2px 16px rgba(28,58,52,0.07), 0 1px 3px rgba(0,0,0,0.04);
+      --shadow-hero: 0 10px 32px rgba(28,58,52,0.22), 0 2px 8px rgba(28,58,52,0.1);
     }
 
     html { height: 100%; }
@@ -136,7 +136,7 @@
     /* text slides */
     .s-badge {
       display: inline-block;
-      border: 1px solid rgba(143,188,106,0.45);
+      border: 1px solid rgba(90,170,128,0.45);
       color: var(--gl);
       border-radius: 20px;
       padding: 5px 14px;
@@ -172,7 +172,7 @@
       align-items: center; justify-content: center;
       gap: 14px;
     }
-    .s-photo-ph-club  { background: linear-gradient(150deg, #243c28, #3d6b40); }
+    .s-photo-ph-club  { background: linear-gradient(150deg, #162e28, #245a46); }
     .s-photo-ph-letter {
       background: linear-gradient(160deg, #2e2416, #4a3820);
       position: relative; overflow: hidden;
@@ -260,7 +260,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(0,0,0,0.04);
-      box-shadow: 0 1px 0 rgba(0,0,0,0.03), 0 4px 20px rgba(44,74,46,0.05);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.03), 0 4px 20px rgba(28,58,52,0.05);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -281,12 +281,12 @@
       border-radius: 50%;
       flex-shrink: 0;
       margin-bottom: 1px;
-      box-shadow: 0 0 0 3px rgba(122,173,86,0.2);
+      box-shadow: 0 0 0 3px rgba(90,170,128,0.2);
     }
     .hdr-date {
       font-size: 12px; font-weight: 500;
       color: var(--gd);
-      background: rgba(122,173,86,0.12);
+      background: rgba(90,170,128,0.12);
       border-radius: 20px;
       padding: 5px 13px;
       letter-spacing: -0.2px;
@@ -330,7 +330,7 @@
       height: var(--nav-h);
       background: #ffffff;
       border-top: 1px solid rgba(0,0,0,0.08);
-      box-shadow: 0 -2px 12px rgba(44,74,46,0.06);
+      box-shadow: 0 -2px 12px rgba(28,58,52,0.06);
       display: grid;
       grid-template-columns: repeat(4, 1fr);
     }
@@ -364,7 +364,7 @@
       content: '';
       position: absolute;
       width: 120px; height: 120px;
-      background: rgba(122,173,86,0.12);
+      background: rgba(90,170,128,0.12);
       border-radius: 50%;
       top: -30px; left: -30px;
     }
@@ -383,7 +383,7 @@
       font-family: 'Nanum Pen Script', cursive;
       font-size: 42px; color: #fff; margin-bottom: 6px; line-height: 1.05;
     }
-    .tc-theme { font-size: 16px; color: rgba(160,210,120,0.95); font-weight: 600; letter-spacing: 0.2px; }
+    .tc-theme { font-size: 16px; color: rgba(130,200,160,0.95); font-weight: 600; letter-spacing: 0.2px; }
     .tc-img {
       flex-shrink: 0;
       width: 110px; height: 110px;
@@ -411,7 +411,7 @@
     }
     .day-tab.active {
       background: var(--gd); border-color: var(--gd); color: #fff;
-      box-shadow: 0 4px 16px rgba(44,74,46,0.28);
+      box-shadow: 0 4px 16px rgba(28,58,52,0.28);
     }
 
     .mission-card {
@@ -499,7 +499,7 @@
       font-size: 15px; font-weight: 700;
       font-family: 'Noto Sans KR', sans-serif;
       cursor: pointer; margin-bottom: 18px;
-      box-shadow: 0 4px 16px rgba(44,74,46,0.28);
+      box-shadow: 0 4px 16px rgba(28,58,52,0.28);
       transition: opacity 0.15s, transform 0.12s;
       letter-spacing: 0.2px;
     }
@@ -549,8 +549,8 @@
     }
     .about-chip {
       display: inline-block;
-      border: 1px solid rgba(122,173,86,0.45);
-      color: rgba(122,173,86,0.9);
+      border: 1px solid rgba(90,170,128,0.45);
+      color: rgba(90,170,128,0.9);
       border-radius: 20px; padding: 7px 18px;
       font-size: 12px; margin-top: 20px; letter-spacing: 0.3px;
     }
@@ -633,15 +633,15 @@
 
     .btn-primary {
       width: 100%; padding: 15px;
-      background: linear-gradient(135deg, #2c4a2e 0%, #3d6b40 100%);
+      background: linear-gradient(135deg, #1c3a34 0%, #245a46 100%);
       color: #fff;
       border: none; border-radius: 14px;
       font-size: 15px; font-weight: 700;
       font-family: 'Noto Sans KR', sans-serif;
       cursor: pointer; transition: transform 0.1s, box-shadow 0.1s;
-      box-shadow: 0 4px 14px rgba(44,74,46,0.28);
+      box-shadow: 0 4px 14px rgba(28,58,52,0.28);
     }
-    .btn-primary:active { transform: scale(0.98); box-shadow: 0 2px 6px rgba(44,74,46,0.2); }
+    .btn-primary:active { transform: scale(0.98); box-shadow: 0 2px 6px rgba(28,58,52,0.2); }
     .btn-primary:disabled { background: #c8c3bc; cursor: not-allowed; box-shadow: none; }
     .upload-notice { font-size: 11px; color: var(--tm); text-align: center; margin-top: 9px; }
 
@@ -764,7 +764,7 @@
     }
     .gallery-year-tab.active {
       background: var(--gd); border-color: var(--gd); color: #fff;
-      box-shadow: 0 4px 14px rgba(44,74,46,0.26);
+      box-shadow: 0 4px 14px rgba(28,58,52,0.26);
     }
 
     .gallery-empty {
@@ -1193,7 +1193,7 @@ function goSlide(idx) {
     seg.classList.toggle('active', i === idx);
   });
 
-  const bgs = { hero:'#2c4a2e', photo:'#1e3422', letter:'#2a1e10', join:'#3d6b40' };
+  const bgs = { hero:'#1c3a34', photo:'#162e28', letter:'#1a2e28', join:'#245a46' };
   document.getElementById('story').style.background = bgs[SLIDES[idx]];
 
   renderSlide(SLIDES[idx]);
@@ -1208,8 +1208,8 @@ function renderSlide(type) {
 
   if (type === 'hero') {
     slide.innerHTML = `
-      <div class="blob" style="width:260px;height:260px;background:#8fbc6a;top:-90px;left:-90px;position:absolute;animation-delay:0s"></div>
-      <div class="blob" style="width:180px;height:180px;background:#a8d080;bottom:-60px;right:-60px;position:absolute;animation-delay:-4s"></div>
+      <div class="blob" style="width:260px;height:260px;background:#6abf94;top:-90px;left:-90px;position:absolute;animation-delay:0s"></div>
+      <div class="blob" style="width:180px;height:180px;background:#7ac4a0;bottom:-60px;right:-60px;position:absolute;animation-delay:-4s"></div>
       <div style="position:relative;z-index:2">
         <div class="s-badge">노원구꿈드림 환경동아리</div>
         <div class="s-title">지구를<br>시언하게</div>
@@ -1246,7 +1246,7 @@ function renderSlide(type) {
 
   } else if (type === 'join') {
     slide.innerHTML = `
-      <div class="blob" style="width:200px;height:200px;background:#8fbc6a;top:-60px;right:-60px;position:absolute;animation-delay:-2s"></div>
+      <div class="blob" style="width:200px;height:200px;background:#6abf94;top:-60px;right:-60px;position:absolute;animation-delay:-2s"></div>
       <div style="position:relative;z-index:2;width:100%">
         <div class="s-badge" style="margin-bottom:16px">함께해요!</div>
         <div class="s-steps">
@@ -1353,9 +1353,10 @@ function initMissions() {
     const card = document.createElement('div');
     card.className = 'mission-card';
     card.style.display = i === todayIdx ? 'block' : 'none';
+    const themeText = d.theme.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}]\s*/u, '');
     card.innerHTML = `
       <div class="mc-header">
-        <div class="mc-theme">${d.theme}</div>
+        <div class="mc-theme">${themeText}</div>
       </div>
       <div class="mc-body">
         ${d.list.map((m, j) => `
