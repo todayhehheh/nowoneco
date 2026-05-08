@@ -21,7 +21,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;500;700&display=swap"></noscript>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -489,10 +491,20 @@
       font-size: 19px; line-height: 1.5; color: var(--td);
     }
     .board-empty {
-      text-align: center; padding: 72px 20px;
-      color: var(--tm); font-size: 14px; line-height: 2;
+      text-align: center; padding: 48px 24px 56px;
+      display: flex; flex-direction: column; align-items: center; gap: 0;
     }
-    .board-empty-icon { font-size: 48px; margin-bottom: 14px; }
+    .board-empty-img {
+      width: 90px; height: 90px;
+      object-fit: contain; margin-bottom: 16px; opacity: 0.85;
+    }
+    .board-empty-title {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 26px; color: var(--gd); margin-bottom: 8px; line-height: 1.3;
+    }
+    .board-empty-desc {
+      font-size: 13px; color: var(--tm); line-height: 1.8;
+    }
 
     .feed-upload-btn {
       display: block; width: 100%;
@@ -1476,7 +1488,7 @@ async function loadPosts() {
       .eq('status','approved').order('created_at',{ascending:false});
     if (error) throw error;
     if (!data || data.length === 0) {
-      container.innerHTML = `<div class="board-empty"><div class="board-empty-icon">🌱</div>아직 게시물이 없어요.<br>첫 번째로 실천해봐요!</div>`;
+      container.innerHTML = `<div class="board-empty"><img class="board-empty-img" src="img/001.png" alt=""><div class="board-empty-title">아직 아무도 없어요!</div><div class="board-empty-desc">미션 하나 해보고<br>첫 번째로 사진 올려봐요 🌱</div></div>`;
       return;
     }
     const grid = document.createElement('div');
@@ -1940,6 +1952,12 @@ function safeImg(src, alt = '') {
 // ══════════════════════════════════════════════
 // BOOT
 // ══════════════════════════════════════════════
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/nowoneco/sw.js');
+  });
+}
+
 initStory();
 initLightbox();
 </script>
