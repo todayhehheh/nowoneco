@@ -1260,8 +1260,9 @@ function renderSlide(type) {
         </div>
         <button class="s-start-btn" id="s-start">시작하기 →</button>
       </div>`;
-    setTimeout(() => {
-      document.getElementById('s-start')?.addEventListener('click', e => {
+    setTimeout(function() {
+      var sStart = document.getElementById('s-start');
+      if (sStart) sStart.addEventListener('click', function(e) {
         e.stopPropagation();
         startApp(true);
       });
@@ -1893,7 +1894,7 @@ function compressImage(file, maxPx = 1280, quality = 0.82) {
 // 오류 메시지 해석
 // ══════════════════════════════════════════════
 function friendlyError(e) {
-  const msg = (e?.message || e?.error_description || String(e)).toLowerCase();
+  const msg = ((e && e.message) || (e && e.error_description) || String(e)).toLowerCase();
   if (msg.includes('row-level security') || msg.includes('rls'))
     return 'Supabase 보안 정책 설정이 필요해요. SQL Editor에서 정책을 추가해주세요.';
   if (msg.includes('bucket') || msg.includes('not found'))
