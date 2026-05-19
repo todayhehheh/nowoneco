@@ -126,7 +126,7 @@
     .blob {
       position: absolute;
       border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-      opacity: 0.1;
+      opacity: 0.18;
       pointer-events: none;
       animation: blob-m 9s ease-in-out infinite;
     }
@@ -147,16 +147,53 @@
       letter-spacing: 1.5px;
       margin-bottom: 20px;
     }
+    @keyframes s-up {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: none; opacity: 1; }
+    }
+    .s-inner {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; width: 100%;
+    }
+    .s-kicker {
+      font-size: 11px; letter-spacing: 2px; color: var(--gl);
+      margin-bottom: 18px; text-transform: uppercase;
+      animation: s-up 0.55s cubic-bezier(.22,1,.36,1) 0.05s both;
+    }
     .s-title {
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 58px; color: #fff;
-      line-height: 1.15; margin-bottom: 14px;
+      font-size: 62px; color: #fff;
+      line-height: 1.1; margin-bottom: 0;
+      animation: s-up 0.55s cubic-bezier(.22,1,.36,1) 0.13s both;
+    }
+    .s-line {
+      width: 32px; height: 2px;
+      background: var(--gl); border-radius: 2px;
+      margin: 20px auto 22px;
+      animation: s-up 0.55s cubic-bezier(.22,1,.36,1) 0.22s both;
     }
     .s-sub {
+      font-size: 17px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 400;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.75;
+      animation: s-up 0.55s cubic-bezier(.22,1,.36,1) 0.3s both;
+    }
+    .s-hl { color: var(--gl); }
+    .s-bg-num {
+      position: absolute;
       font-family: 'Nanum Pen Script', cursive;
-      font-size: 24px;
-      color: rgba(255,255,255,0.78);
-      line-height: 1.65;
+      font-size: 220px;
+      color: rgba(255,255,255,0.045);
+      right: 8px; bottom: 16px;
+      line-height: 1;
+      pointer-events: none; user-select: none;
+      z-index: 1;
+    }
+    .s-start-btn {
+      animation: s-up 0.55s cubic-bezier(.22,1,.36,1) 0.38s both;
     }
 
     /* photo slides */
@@ -520,6 +557,18 @@
       letter-spacing: 0.2px;
     }
     .feed-upload-btn:active { opacity: 0.88; transform: scale(0.98); }
+    .feed-more-btn {
+      display: block; width: 100%; margin-top: 12px;
+      padding: 13px;
+      background: none;
+      border: 1.5px solid var(--gm);
+      border-radius: 14px;
+      color: var(--gm); font-size: 14px; font-weight: 600;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .feed-more-btn:active { background: var(--gm); color: #fff; }
 
     /* ── GALLERY TAB ─────────────────────────── */
     .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -548,12 +597,14 @@
 
     /* ── ABOUT TAB ────────────────────────────── */
     .about-hero {
-      background: var(--grad-hero);
       border-radius: 24px;
-      padding: 34px 24px;
-      text-align: center;
+      overflow: hidden;
       margin-bottom: 16px;
       box-shadow: var(--shadow-hero);
+    }
+    .about-photo {
+      width: 100%; aspect-ratio: 1/1;
+      object-fit: cover; display: block;
     }
     .about-title {
       font-family: 'Nanum Pen Script', cursive;
@@ -892,7 +943,7 @@
     <div id="tab-feed" class="tab-pane">
       <div class="pane-pad">
         <div class="pane-heading">환경보호 함께 해요!</div>
-        <button class="feed-upload-btn" id="feed-upload-btn">📸 나도 해봤어요!</button>
+        <button class="feed-upload-btn" id="feed-upload-btn">📸 미션 참여하기</button>
         <div id="posts-container">
           <div class="loader"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>
         </div>
@@ -921,15 +972,7 @@
     <div id="tab-about" class="tab-pane">
       <div class="pane-pad">
         <div class="about-hero">
-          <div class="about-title">저희가 만들었어요</div>
-          <!-- [교체] 소개 텍스트 -->
-          <p class="about-text">
-            노원구꿈드림 환경동아리는<br>
-            학교밖청소년들이 모인 곳이에요.<br>
-            지구를 위해 뭔가 하고 싶어서<br>
-            이 페이지를 직접 만들었어요.
-          </p>
-          <div class="about-chip">🌍 지구를 시언하게</div>
+          <img src="img/소개.png" alt="동아리 소개" class="about-photo">
         </div>
         <div class="about-row" id="replay-story-btn">
           <span>인트로 다시 보기</span>
@@ -1161,8 +1204,7 @@ function toast(msg) {
 // ══════════════════════════════════════════════
 // STORY (수동 탭 이동)
 // ══════════════════════════════════════════════
-// 슬라이드 순서: hero → photo(동아리 사진) → letter(손편지) → join
-const SLIDES = ['hero', 'photo', 'letter', 'join'];
+const SLIDES = ['worry', 'act', 'daily', 'join'];
 let curSlide = 0;
 
 function initStory() {
@@ -1209,7 +1251,7 @@ function goSlide(idx) {
     seg.classList.toggle('active', i === idx);
   });
 
-  const bgs = { hero:'#1c3a34', photo:'#162e28', letter:'#1a2e28', join:'#245a46' };
+  const bgs = { worry:'#0f2420', act:'#162e28', daily:'#1a3530', join:'#1c3a34' };
   document.getElementById('story').style.background = bgs[SLIDES[idx]];
 
   renderSlide(SLIDES[idx]);
@@ -1222,54 +1264,48 @@ function renderSlide(type) {
   const slide = document.createElement('div');
   slide.className = 's-slide active';
 
-  if (type === 'hero') {
+  if (type === 'worry') {
     slide.innerHTML = `
-      <div class="blob" style="width:260px;height:260px;background:#6abf94;top:-90px;left:-90px;position:absolute;animation-delay:0s"></div>
-      <div class="blob" style="width:180px;height:180px;background:#7ac4a0;bottom:-60px;right:-60px;position:absolute;animation-delay:-4s"></div>
-      <div style="position:relative;z-index:2">
-        <div class="s-badge">노원구꿈드림 환경동아리</div>
-        <div class="s-title">지구를<br>시언하게</div>
-        <div class="s-sub">저희가 어른들한테<br>부탁이 있어요</div>
+      <div class="blob" style="width:320px;height:320px;background:#5aaa80;top:-130px;left:-110px;position:absolute;animation-delay:0s"></div>
+      <div class="blob" style="width:160px;height:160px;background:#3d8a60;bottom:-60px;right:-50px;position:absolute;animation-delay:-5s"></div>
+      <div class="s-bg-num">01</div>
+      <div class="s-inner" style="text-align:left;align-items:flex-start">
+        <div class="s-kicker">노원구꿈드림 환경동아리</div>
+        <div class="s-title">지구가 좀<br><span class="s-hl">걱정</span>이 됐어요</div>
+        <div class="s-line" style="margin-left:0"></div>
       </div>`;
 
-  } else if (type === 'photo') {
-    slide.style.padding = '0';
+  } else if (type === 'act') {
     slide.innerHTML = `
-      <div class="s-photo-wrap">
-        <div class="s-photo-ph s-photo-ph-club">
-          <div class="s-photo-ph-icon">📸</div>
-          <div class="s-photo-ph-text">동아리 사진이 들어와요</div>
-        </div>
-        <!-- 사진 준비되면 위 div 지우고 아래 주석 해제 -->
-        <!-- <img src="img/club-photo.jpg" alt="동아리 사진"> -->
-      </div>
-      <div class="s-photo-overlay"></div>
-      <div class="s-photo-caption">저희 환경동아리예요 👋</div>`;
+      <div class="blob" style="width:220px;height:220px;background:#5aaa80;top:-80px;right:-70px;position:absolute;animation-delay:-3s"></div>
+      <div class="blob" style="width:280px;height:280px;background:#2e6350;bottom:-100px;left:-90px;position:absolute;animation-delay:-7s"></div>
+      <div class="s-bg-num">02</div>
+      <div class="s-inner">
+        <div class="s-title">그래서<br><span class="s-hl">직접</span> 해보기로 했어요</div>
+        <div class="s-line"></div>
+        <div class="s-sub">노원구 학교 밖 청소년들이<br>모였어요</div>
+      </div>`;
 
-  } else if (type === 'letter') {
-    slide.style.padding = '0';
+  } else if (type === 'daily') {
     slide.innerHTML = `
-      <div class="s-photo-wrap">
-        <div class="s-photo-ph s-photo-ph-letter">
-          <div class="s-photo-ph-icon">✏️</div>
-          <div class="s-photo-ph-text">손편지가 들어와요</div>
-        </div>
-        <!-- 편지 사진 준비되면 위 div 지우고 아래 주석 해제 -->
-        <!-- <img src="img/letter.jpg" alt="손편지"> -->
-      </div>
-      <div class="s-photo-overlay"></div>
-      <div class="s-photo-caption">아이들이 직접 쓴 편지예요</div>`;
+      <div class="blob" style="width:240px;height:240px;background:#5aaa80;bottom:-80px;right:-80px;position:absolute;animation-delay:-2s"></div>
+      <div class="blob" style="width:180px;height:180px;background:#3d8a60;top:-60px;left:-50px;position:absolute;animation-delay:-6s"></div>
+      <div class="s-bg-num">03</div>
+      <div class="s-inner" style="text-align:left;align-items:flex-start">
+        <div class="s-title">매일<br><span class="s-hl">하나씩</span></div>
+        <div class="s-line" style="margin-left:0"></div>
+        <div class="s-sub">전기 아끼기, 분리수거, 텀블러<br>작은 것들이 지구를 시원하게 해줘요</div>
+      </div>`;
 
   } else if (type === 'join') {
     slide.innerHTML = `
-      <div class="blob" style="width:200px;height:200px;background:#6abf94;top:-60px;right:-60px;position:absolute;animation-delay:-2s"></div>
-      <div style="position:relative;z-index:2;width:100%">
-        <div class="s-badge" style="margin-bottom:16px">함께해요!</div>
-        <div class="s-steps">
-          <div class="s-step"><div class="s-step-num">1</div><div class="s-step-text">미션을 보고 하나 골라요</div></div>
-          <div class="s-step"><div class="s-step-num">2</div><div class="s-step-text">직접 따라해 봐요</div></div>
-          <div class="s-step"><div class="s-step-num">3</div><div class="s-step-text">사진 찍고 올리면 피드에 실려요 📸</div></div>
-        </div>
+      <div class="blob" style="width:200px;height:200px;background:#5aaa80;top:-60px;right:-60px;position:absolute;animation-delay:-2s"></div>
+      <div class="blob" style="width:260px;height:260px;background:#2e6350;bottom:-90px;left:-90px;position:absolute;animation-delay:-4s"></div>
+      <div class="s-bg-num">04</div>
+      <div class="s-inner">
+        <div class="s-title">함께<br><span class="s-hl">해보실래요?</span></div>
+        <div class="s-line"></div>
+        <div class="s-sub">미션 하나 해보시고<br>사진 올리시면 피드에 실려요</div>
         <button class="s-start-btn" id="s-start">시작하기 →</button>
       </div>`;
     setTimeout(function() {
@@ -1321,6 +1357,21 @@ function initApp() {
   initAdmin();
   initPullToRefresh();
   loadPosts();
+
+  /* RLS 미설정 시 경고 — Supabase 대시보드 > SQL Editor에 아래 SQL을 실행하세요 */
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+    console.info(
+      '%c[보안] Supabase RLS 정책 SQL\n\n' +
+      'alter table posts enable row level security;\n\n' +
+      '-- 일반 유저: approved 게시물만 조회\n' +
+      'create policy "read approved" on posts for select using (status = \'approved\');\n\n' +
+      '-- 일반 유저: pending으로만 삽입\n' +
+      'create policy "insert pending" on posts for insert with check (status = \'pending\');\n\n' +
+      '-- UPDATE / DELETE는 Supabase 대시보드 > Table Editor > posts > Policies 에서\n' +
+      '-- anon 역할을 허용하지 않으면 됩니다. (기본값이 차단)\n',
+      'color:#2e6350;font-size:12px'
+    );
+  }
 }
 
 // ── TABS
@@ -1476,6 +1527,10 @@ function renderGalleryGrid(container, items) {
 }
 
 // ── POSTS
+var _feedPosts = [];
+var _feedPage  = 0;
+var FEED_PAGE_SIZE = 20;
+
 async function loadPosts() {
   const container = document.getElementById('posts-container');
   if (!sb) {
@@ -1484,32 +1539,69 @@ async function loadPosts() {
   }
   try {
     const { data, error } = await sb
-      .from('posts').select('id,text,image_url')
+      .from('posts').select('id,text,image_url,created_at')
       .eq('status','approved').order('created_at',{ascending:false});
     if (error) throw error;
-    if (!data || data.length === 0) {
-      container.innerHTML = `<div class="board-empty"><img class="board-empty-img" src="img/001.png" alt=""><div class="board-empty-title">아직 아무도 없어요!</div><div class="board-empty-desc">미션 하나 해보고<br>첫 번째로 사진 올려봐요 🌱</div></div>`;
+
+    var todayDOW = new Date().getDay();
+    var mIdx = todayDOW === 0 ? 6 : todayDOW - 1;
+    var todayMission = missions[mIdx];
+    var todayImgSrc = (todayMission && todayMission.img) ? todayMission.img : 'img/001.png';
+    var todayLabel = todayMission ? todayMission.day + ' — ' + todayMission.theme : '오늘의 미션';
+
+    _feedPosts = (data || []).filter(function(p) {
+      return new Date(p.created_at).getDay() === todayDOW;
+    });
+    _feedPage = 0;
+
+    if (_feedPosts.length === 0) {
+      container.innerHTML = `<div class="board-empty"><img class="board-empty-img" src="${todayImgSrc}" alt=""><div class="board-empty-title">오늘 첫 번째 주인공이 되어봐요!</div><div class="board-empty-desc">${todayLabel}<br>미션 하고 사진 올려봐요 🌱</div></div>`;
       return;
     }
-    const grid = document.createElement('div');
-    grid.className = 'posts-grid';
-    data.forEach(post => {
-      const card = document.createElement('div');
-      card.className = 'post-card';
-      card.innerHTML = `
-        <div class="post-img-wrap">
-          ${post.image_url
-            ? `<img class="post-img" src="${post.image_url}" alt="" loading="lazy"
-                onerror="this.parentNode.innerHTML='<div class=\\'img-error\\'>🌿</div>'">`
-            : '<div class="img-error">🌿</div>'}
-        </div>
-        <div class="post-text">${esc(post.text)}</div>`;
-      grid.appendChild(card);
-    });
+
     container.innerHTML = '';
+    var grid = document.createElement('div');
+    grid.className = 'posts-grid';
+    grid.id = 'posts-grid';
     container.appendChild(grid);
+
+    renderFeedPage();
   } catch(e) {
-    container.innerHTML = `<div class="board-empty">게시물을 불러오지 못했어요 😅</div>`;
+    document.getElementById('posts-container').innerHTML = `<div class="board-empty">게시물을 불러오지 못했어요 😅</div>`;
+  }
+}
+
+function renderFeedPage() {
+  var grid = document.getElementById('posts-grid');
+  var container = document.getElementById('posts-container');
+  var start = _feedPage * FEED_PAGE_SIZE;
+  var slice = _feedPosts.slice(start, start + FEED_PAGE_SIZE);
+
+  slice.forEach(function(post) {
+    var card = document.createElement('div');
+    card.className = 'post-card';
+    card.innerHTML = `
+      <div class="post-img-wrap">
+        ${post.image_url
+          ? `<img class="post-img" src="${post.image_url}" alt="" loading="lazy"
+              onerror="this.parentNode.innerHTML='<div class=\\'img-error\\'>🌿</div>'">`
+          : '<div class="img-error">🌿</div>'}
+      </div>
+      <div class="post-text">${esc(post.text)}</div>`;
+    grid.appendChild(card);
+  });
+  _feedPage++;
+
+  var oldBtn = document.getElementById('feed-more-btn');
+  if (oldBtn) oldBtn.remove();
+
+  if (_feedPage * FEED_PAGE_SIZE < _feedPosts.length) {
+    var btn = document.createElement('button');
+    btn.id = 'feed-more-btn';
+    btn.className = 'feed-more-btn';
+    btn.textContent = '더 보기';
+    btn.addEventListener('click', renderFeedPage);
+    container.appendChild(btn);
   }
 }
 
@@ -1532,8 +1624,8 @@ function initUpload() {
   fileInput.addEventListener('change', async e => {
     const raw = e.target.files[0];
     if (!raw) return;
-    // 10MB 초과 시 경고만 (압축 후 올라가므로 허용)
-    if (raw.size > 30 * 1024 * 1024) { toast('30MB 이하 파일만 선택해주세요.'); return; }
+    if (!raw.type.startsWith('image/')) { toast('이미지 파일만 올릴 수 있어요.'); fileInput.value = ''; return; }
+    if (raw.size > 20 * 1024 * 1024) { toast('20MB 이하 파일만 선택해주세요.'); fileInput.value = ''; return; }
     submitBtn.textContent = '이미지 준비 중...';
     file = await compressImage(raw);
     prevImg.src = URL.createObjectURL(file);
@@ -1604,13 +1696,34 @@ function initAdmin() {
 
   closeBtn.addEventListener('click', () => { history.pushState('','', ' '); panel.classList.remove('open'); });
   pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') loginBtn.click(); });
+
+  var _adminFails = 0;
+  var _adminLockUntil = 0;
   loginBtn.addEventListener('click', () => {
+    var now = Date.now();
+    if (now < _adminLockUntil) {
+      var sec = Math.ceil((_adminLockUntil - now) / 1000);
+      toast(sec + '초 후에 다시 시도해주세요.');
+      pwInput.value = '';
+      return;
+    }
     if (pwInput.value === ADMIN_PASSWORD) {
+      _adminFails = 0;
       document.getElementById('admin-login-wrap').style.display = 'none';
       document.getElementById('admin-content').style.display = 'block';
       loadPending();
       initGalleryAdmin();
-    } else { toast('비밀번호가 틀렸어요!'); pwInput.value = ''; }
+    } else {
+      _adminFails++;
+      pwInput.value = '';
+      if (_adminFails >= 5) {
+        _adminLockUntil = Date.now() + 60000;
+        _adminFails = 0;
+        toast('5회 틀렸어요. 1분 후에 다시 시도해주세요.');
+      } else {
+        toast('비밀번호가 틀렸어요! (' + _adminFails + '/5)');
+      }
+    }
   });
 
   // 관리자 내부 탭 전환
