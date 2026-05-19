@@ -1,4 +1,4 @@
-const CACHE = 'nowoneco-v2';
+const CACHE = 'nowoneco-v3';
 const STATIC = [
   '/nowoneco/',
   '/nowoneco/index.html',
