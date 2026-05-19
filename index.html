@@ -774,6 +774,20 @@
       background: #fff; color: var(--gd); font-weight: 700;
       box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
+    .adm-dow-tabs {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      margin: 12px 0 14px;
+    }
+    .adm-dow-tab {
+      padding: 5px 13px;
+      border: 1.5px solid rgba(46,99,80,0.35);
+      border-radius: 20px;
+      background: none; color: var(--tm);
+      font-size: 12px; font-weight: 600;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .adm-dow-tab.active { background: var(--gm); color: #fff; border-color: var(--gm); }
 
     /* 갤러리 관리 */
     .gallery-add-btn {
@@ -1070,6 +1084,16 @@
       <!-- 게시물 관리 (승인된 글) -->
       <div id="admin-approved-section" style="display:none">
         <div class="pending-count" id="approved-count"></div>
+        <div class="adm-dow-tabs" id="adm-dow-tabs">
+          <button class="adm-dow-tab active" data-dow="-1">전체</button>
+          <button class="adm-dow-tab" data-dow="1">월</button>
+          <button class="adm-dow-tab" data-dow="2">화</button>
+          <button class="adm-dow-tab" data-dow="3">수</button>
+          <button class="adm-dow-tab" data-dow="4">목</button>
+          <button class="adm-dow-tab" data-dow="5">금</button>
+          <button class="adm-dow-tab" data-dow="6">토</button>
+          <button class="adm-dow-tab" data-dow="0">일</button>
+        </div>
         <div id="approved-list"></div>
       </div>
 
@@ -1788,46 +1812,88 @@ async function loadPending() {
   }
 }
 
+var _approvedAll = [];
+var _approvedDow = -1;
+var DOW_NAMES = ['일','월','화','수','목','금','토'];
+
 async function loadApproved() {
   const list = document.getElementById('approved-list');
-  const cnt  = document.getElementById('approved-count');
   if (!sb) { list.innerHTML = '<div style="color:#888;font-size:13px">Supabase 설정이 필요해요.</div>'; return; }
   list.innerHTML = '<div class="loader"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>';
   try {
     const { data, error } = await sb.from('posts').select('*').eq('status','approved').order('created_at',{ascending:false});
     if (error) throw error;
-    cnt.textContent = `승인된 게시물: ${data.length}개`;
-    if (data.length === 0) { list.innerHTML = '<div style="color:#888;font-size:13px;text-align:center;padding:24px">승인된 게시물이 없어요</div>'; return; }
-    list.innerHTML = '';
-    data.forEach(post => {
-      const item = document.createElement('div');
-      item.className = 'admin-item';
-      const del = document.createElement('button'); del.className = 'btn-no'; del.textContent = '🗑 삭제';
-      item.innerHTML = `
-        ${post.image_url ? `<img class="admin-img" src="${post.image_url}" alt="" loading="lazy">` : ''}
-        <div class="admin-text">${esc(post.text)}</div>
-        <div class="admin-actions"></div>`;
-      item.querySelector('.admin-actions').append(del);
-      del.addEventListener('click', async () => {
-        if (!confirm('이 게시물을 삭제할까요?')) return;
-        del.disabled = true;
-        try {
-          if (post.image_url) {
-            const p = decodeURIComponent(post.image_url.split('/post-images/').pop());
-            if (p) await sb.storage.from('post-images').remove([p]);
-          }
-          const { error } = await sb.from('posts').delete().eq('id', post.id);
-          if (error) throw error;
-          item.remove();
-          cnt.textContent = `승인된 게시물: ${parseInt(cnt.textContent) - 1}개`;
-          loadPosts();
-        } catch(e) { toast('오류가 났어요 😅'); del.disabled = false; }
+    _approvedAll = data || [];
+
+    var tabsEl = document.getElementById('adm-dow-tabs');
+    if (!tabsEl._init) {
+      tabsEl._init = true;
+      tabsEl.querySelectorAll('.adm-dow-tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          tabsEl.querySelectorAll('.adm-dow-tab').forEach(function(t) { t.classList.remove('active'); });
+          tab.classList.add('active');
+          _approvedDow = parseInt(tab.dataset.dow);
+          renderApproved();
+        });
       });
-      list.appendChild(item);
-    });
+    }
+
+    // 탭 초기화 (전체 선택 상태로)
+    tabsEl.querySelectorAll('.adm-dow-tab').forEach(function(t) { t.classList.remove('active'); });
+    tabsEl.querySelector('[data-dow="-1"]').classList.add('active');
+    _approvedDow = -1;
+    renderApproved();
   } catch(e) {
-    list.innerHTML = '<div style="color:#e00;font-size:13px">불러오기 실패</div>';
+    document.getElementById('approved-list').innerHTML = '<div style="color:#e00;font-size:13px">불러오기 실패</div>';
   }
+}
+
+function renderApproved() {
+  const list = document.getElementById('approved-list');
+  const cnt  = document.getElementById('approved-count');
+
+  var filtered = _approvedDow === -1
+    ? _approvedAll
+    : _approvedAll.filter(function(p) { return new Date(p.created_at).getDay() === _approvedDow; });
+
+  cnt.textContent = _approvedDow === -1
+    ? '승인된 게시물: ' + _approvedAll.length + '개'
+    : DOW_NAMES[_approvedDow] + '요일 게시물: ' + filtered.length + '개';
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div style="color:#888;font-size:13px;text-align:center;padding:24px">해당 요일 게시물이 없어요</div>';
+    return;
+  }
+  list.innerHTML = '';
+  filtered.forEach(function(post) {
+    var d = new Date(post.created_at);
+    var dateStr = (d.getMonth()+1) + '/' + d.getDate() + ' (' + DOW_NAMES[d.getDay()] + ')';
+    const item = document.createElement('div');
+    item.className = 'admin-item';
+    const del = document.createElement('button'); del.className = 'btn-no'; del.textContent = '🗑 삭제';
+    item.innerHTML = `
+      ${post.image_url ? `<img class="admin-img" src="${post.image_url}" alt="" loading="lazy">` : ''}
+      <div class="admin-text">${esc(post.text)}</div>
+      <div style="font-size:11px;color:#999;margin:4px 0 6px">${dateStr}</div>
+      <div class="admin-actions"></div>`;
+    item.querySelector('.admin-actions').append(del);
+    del.addEventListener('click', async () => {
+      if (!confirm('이 게시물을 삭제할까요?')) return;
+      del.disabled = true;
+      try {
+        if (post.image_url) {
+          const p = decodeURIComponent(post.image_url.split('/post-images/').pop());
+          if (p) await sb.storage.from('post-images').remove([p]);
+        }
+        const { error } = await sb.from('posts').delete().eq('id', post.id);
+        if (error) throw error;
+        _approvedAll = _approvedAll.filter(function(p) { return p.id !== post.id; });
+        renderApproved();
+        loadPosts();
+      } catch(e) { toast('오류가 났어요 😅'); del.disabled = false; }
+    });
+    list.appendChild(item);
+  });
 }
 
 // ── GALLERY ADMIN
