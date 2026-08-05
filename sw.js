@@ -1,7 +1,9 @@
-const CACHE = 'nowoneco-v3';
+const CACHE = 'nowoneco-v4';
 const STATIC = [
   '/nowoneco/',
   '/nowoneco/index.html',
+  '/nowoneco/style.css',
+  '/nowoneco/app.js',
   '/nowoneco/manifest.json',
   '/nowoneco/img/001.png',
   '/nowoneco/img/002.png',
