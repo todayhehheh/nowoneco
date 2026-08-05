@@ -1,17 +1,17 @@
-const CACHE = 'nowoneco-v4';
+const CACHE = 'nowoneco-v5';
 const STATIC = [
   '/nowoneco/',
   '/nowoneco/index.html',
   '/nowoneco/style.css',
   '/nowoneco/app.js',
   '/nowoneco/manifest.json',
-  '/nowoneco/img/001.png',
-  '/nowoneco/img/002.png',
-  '/nowoneco/img/003.png',
-  '/nowoneco/img/004.png',
-  '/nowoneco/img/005.png',
-  '/nowoneco/img/006.png',
-  '/nowoneco/img/007.png',
+  '/nowoneco/img/001.jpg',
+  '/nowoneco/img/002.jpg',
+  '/nowoneco/img/003.jpg',
+  '/nowoneco/img/004.jpg',
+  '/nowoneco/img/005.jpg',
+  '/nowoneco/img/006.jpg',
+  '/nowoneco/img/007.jpg',
 ];
 
 self.addEventListener('install', function(e) {
@@ -37,7 +37,25 @@ self.addEventListener('fetch', function(e) {
 
   var url = e.request.url;
 
-  // Supabase API는 캐시 안 함
+  // Supabase Storage 이미지 — 캐시 우선 (파일명이 매번 새로 생성돼서
+  // 한번 올라간 사진은 안 바뀌니까 다시 받아올 필요가 없어요)
+  if (url.indexOf('/storage/v1/object/public/') !== -1) {
+    e.respondWith(
+      caches.match(e.request).then(function(cached) {
+        if (cached) return cached;
+        return fetch(e.request).then(function(res) {
+          if (res && res.ok) {
+            var clone = res.clone();
+            caches.open(CACHE).then(function(c) { c.put(e.request, clone); });
+          }
+          return res;
+        });
+      })
+    );
+    return;
+  }
+
+  // 나머지 Supabase API(REST/Auth)는 캐시 안 함 — 항상 최신 데이터 필요
   if (url.indexOf('supabase.co') !== -1) return;
 
   // 구글 폰트 — 캐시 우선
