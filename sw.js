@@ -1,17 +1,17 @@
-const CACHE = 'nowoneco-v5';
+const CACHE = 'nowoneco-v6';
 const STATIC = [
   '/nowoneco/',
   '/nowoneco/index.html',
   '/nowoneco/style.css',
   '/nowoneco/app.js',
   '/nowoneco/manifest.json',
-  '/nowoneco/img/001.jpg',
-  '/nowoneco/img/002.jpg',
-  '/nowoneco/img/003.jpg',
-  '/nowoneco/img/004.jpg',
-  '/nowoneco/img/005.jpg',
-  '/nowoneco/img/006.jpg',
-  '/nowoneco/img/007.jpg',
+  '/nowoneco/img/001.webp',
+  '/nowoneco/img/002.webp',
+  '/nowoneco/img/003.webp',
+  '/nowoneco/img/004.webp',
+  '/nowoneco/img/005.webp',
+  '/nowoneco/img/006.webp',
+  '/nowoneco/img/007.webp',
 ];
 
 self.addEventListener('install', function(e) {
