@@ -172,70 +172,65 @@ function renderSlide(type) {
 
   if (type === 'greet') {
     slide.innerHTML = `
-      <div class="blob" style="width:320px;height:320px;background:#a3e076;top:-130px;left:-110px;position:absolute;animation-delay:0s"></div>
-      <div class="blob" style="width:160px;height:160px;background:#ffe17d;bottom:-60px;right:-50px;position:absolute;animation-delay:-5s"></div>
-      <div class="s-bg-num">01</div>
-      <div class="s-inner" style="text-align:left;align-items:flex-start">
-        <div class="s-kicker">노원구학교밖청소년지원센터 꿈드림</div>
-        <div class="s-title">안녕하세요!<br>저흰 환경동아리<br><span class="s-hl">지구를 시언하게</span>예요</div>
-        <div class="s-line" style="margin-left:0"></div>
+      <div class="intro-deco intro-deco-one">✿</div><div class="intro-deco intro-deco-two">✳</div>
+      <div class="s-inner intro-center">
+        <div class="intro-eyebrow">노원구 꿈드림 환경동아리</div>
+        <div class="intro-sprout" aria-hidden="true">🌱</div>
+        <div class="s-title">안녕하세요!<br>저희는 <span class="s-hl">지구를 시언하게</span>예요</div>
+        <div class="s-sub">지구를 아끼는 우리의 이야기,<br>잠깐 들어주실래요?</div>
+        <div class="intro-hint">화면을 눌러 다음 이야기 보기  →</div>
       </div>`;
 
   } else if (type === 'photo1') {
     slide.innerHTML = photoSlideHtml(
-      'img/story-group.jpg', '동아리 단체 사진',
-      '짜잔, 이게 바로 저희예요 👋',
-      '🌿', '사진이 곧 올라와요'
+      'img/story-group.jpg', '환경동아리 친구들 사진',
+      '짜잔! 저희가 바로<br>지구를 시언하게예요.',
+      '🌿', '함께 지구를 지켜요!'
     );
 
   } else if (type === 'mission') {
     slide.innerHTML = `
-      <div class="blob" style="width:220px;height:220px;background:#a3e076;top:-80px;right:-70px;position:absolute;animation-delay:-3s"></div>
-      <div class="blob" style="width:280px;height:280px;background:#ffe17d;bottom:-100px;left:-90px;position:absolute;animation-delay:-7s"></div>
-      <div class="s-bg-num">02</div>
-      <div class="s-inner">
-        <div class="s-title">2025년부터<br><span class="s-hl">배우고 실천</span>하고<br>또 <span class="s-hl">알리는</span> 일을 해요</div>
-        <div class="s-line"></div>
-        <div class="s-sub">지구를 시원하게 할 방법을 맨날 고민하고<br>하나씩 직접 해보고 있어요</div>
+      <div class="intro-deco intro-deco-one">☘</div><div class="intro-deco intro-deco-two">✿</div>
+      <div class="s-inner intro-center">
+        <div class="intro-eyebrow">OUR STORY · 2025</div>
+        <div class="intro-sprout" aria-hidden="true">🧤</div>
+        <div class="s-title">작년부터 저희는<br><span class="s-hl">하나씩 실천</span>했어요!</div>
+        <div class="s-sub">쓰레기를 줍고, 분리배출을 배우고,<br>환경을 지키는 방법을 찾아봤어요.</div>
       </div>`;
 
   } else if (type === 'photo2') {
     slide.innerHTML = photoSlideHtml(
-      'img/story-activity.jpg', '동아리 실천 활동 사진',
-      '이렇게 알리는 것도 저희 활동이에요,<br>지금처럼요!',
-      '📣', '사진이 곧 올라와요',
-      true
+      'img/story-activity.jpg', '동아리의 환경 실천 활동',
+      '그런데 우리끼리만 하면<br>조금 아쉽잖아요?',
+      '📸', '우리의 작은 환경 실천',
+      false
     );
 
   } else if (type === 'invite') {
     slide.innerHTML = `
-      <div class="blob" style="width:240px;height:240px;background:#a3e076;bottom:-80px;right:-80px;position:absolute;animation-delay:-2s"></div>
-      <div class="blob" style="width:180px;height:180px;background:#ffe17d;top:-60px;left:-50px;position:absolute;animation-delay:-6s"></div>
-      <div class="s-bg-num">03</div>
-      <div class="s-inner">
-        <div class="s-title">저희랑 같이<br><span class="s-hl">지구를 시원하게</span><br>해보실래요?</div>
-        <div class="s-line"></div>
-        <div class="s-sub">어렵지 않아요, 진짜예요!</div>
+      <div class="intro-deco intro-deco-one">✿</div><div class="intro-deco intro-deco-two">♡</div>
+      <div class="s-inner intro-center">
+        <div class="intro-eyebrow">TOGETHER FOR EARTH</div>
+        <div class="intro-sprout" aria-hidden="true">🌎</div>
+        <div class="s-title">그래서 이제<br><span class="s-hl">함께하고 싶어요!</span></div>
+        <div class="s-sub">저희가 만든 작은 미션을<br>여러분도 같이 해주세요.</div>
       </div>`;
 
   } else if (type === 'join') {
     slide.innerHTML = `
-      <div class="blob" style="width:200px;height:200px;background:#a3e076;top:-60px;right:-60px;position:absolute;animation-delay:-2s"></div>
-      <div class="blob" style="width:260px;height:260px;background:#ffe17d;bottom:-90px;left:-90px;position:absolute;animation-delay:-4s"></div>
-      <div class="s-bg-num">04</div>
-      <div class="s-inner">
-        <div class="s-title">요일마다<br><span class="s-hl">미션</span>이 있어요</div>
-        <div class="s-line"></div>
-        <div class="s-sub">미션 하나만 해보시고<br>사진 한 장 올려주시면 돼요<br>저희 활동도 구경하실 수 있어요!</div>
-        <button class="s-start-btn" id="s-start">시작하기 →</button>
+      <div class="intro-deco intro-deco-one">✿</div><div class="intro-deco intro-deco-two">✳</div>
+      <div class="s-inner intro-center">
+        <div class="intro-eyebrow">하루에 하나, 지구를 위한 실천</div>
+        <div class="intro-sprout" aria-hidden="true">💚</div>
+        <div class="s-title">오늘부터<br><span class="s-hl">우리랑 같이</span> 해요!</div>
+        <div class="s-sub">요일별 미션을 골라 해보고<br>사진으로 알려주세요!</div>
+        <button class="s-start-btn" id="s-start" type="button">오늘의 미션 보러 가기 →</button>
       </div>`;
-    setTimeout(function() {
-      var sStart = document.getElementById('s-start');
-      if (sStart) sStart.addEventListener('click', function(e) {
-        e.stopPropagation();
-        startApp(true);
-      });
-    }, 0);
+    const start = slide.querySelector('#s-start');
+    if (start) start.addEventListener('click', function(e) {
+      e.stopPropagation();
+      startApp(true);
+    });
   }
 
   cont.appendChild(slide);
