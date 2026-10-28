@@ -340,8 +340,13 @@ function initMissions() {
               <div class="mc-comment">${esc(m.c)}</div>
             </div>
           </div>`).join('')}
-      </div>`;
+      </div>
+      <button type="button" class="mission-join-btn" data-mission-join>📷 나도 해봤어요! 사진 올리기</button>`;
     container.appendChild(card);
+  });
+  container.addEventListener("click", e => {
+    if (!e.target.closest("[data-mission-join]")) return;
+    document.getElementById("upload-overlay").classList.add("open");
   });
 }
 
@@ -523,6 +528,9 @@ function initUpload() {
   let file = null;
 
   document.getElementById('feed-upload-btn').addEventListener('click', () => overlay.classList.add('open'));
+  const success = document.getElementById('mission-success');
+  document.getElementById('success-close').addEventListener('click', () => { success.hidden = true; });
+  success.addEventListener('click', e => { if (e.target === success) success.hidden = true; });
   overlay.addEventListener('click', e => { if (e.target === overlay) closeSheet(); });
 
   function closeSheet() { overlay.classList.remove('open'); }
@@ -569,7 +577,7 @@ function initUpload() {
       textarea.value = ''; counter.textContent = '0';
       submitBtn.textContent = '올리기'; submitBtn.disabled = true;
       closeSheet();
-      toast('올렸어요! 검토 후 게시될 거예요 🌿');
+      document.getElementById('mission-success').hidden = false;
     } catch(e) {
       console.error(e);
       toast(friendlyError(e));
