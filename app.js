@@ -139,12 +139,12 @@ function goSlide(idx) {
   });
 
   const bgs = {
-    greet:   'radial-gradient(120% 90% at 15% 0%, rgba(255,246,214,0.32), transparent 60%), linear-gradient(155deg, #1e6b46 0%, #2e8f5b 55%, #4fae6e 100%)',
-    photo1:  '#1e6b46',
-    mission: 'radial-gradient(120% 90% at 85% 0%, rgba(255,246,214,0.28), transparent 60%), linear-gradient(155deg, #1c6247 0%, #2a8556 55%, #52b477 100%)',
-    photo2:  '#1c6247',
-    invite:  'radial-gradient(120% 90% at 50% 0%, rgba(255,246,214,0.3), transparent 60%), linear-gradient(160deg, #1d6c3f 0%, #3a9a5c 60%, #63c17f 100%)',
-    join:    'radial-gradient(120% 90% at 50% 100%, rgba(255,246,214,0.3), transparent 60%), linear-gradient(160deg, #1a5c3a 0%, #2f8f57 55%, #58b878 100%)'
+    greet:   'linear-gradient(150deg,#6a9f80,#9acbaa,#d9e6b3)',
+    photo1:  '#709f83',
+    mission: 'linear-gradient(155deg,#74af8a,#a2d5a8,#e1e5b4)',
+    photo2:  '#7aac8e',
+    invite:  'linear-gradient(160deg,#74a988,#a9d2a7,#efdfa9)',
+    join:    'linear-gradient(160deg,#6b9b7e,#9ecda1,#e9d9a2)'
   };
   document.getElementById('story').style.background = bgs[SLIDES[idx]];
 
