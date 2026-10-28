@@ -979,3 +979,28 @@ body{background:#eaf1e6;letter-spacing:-.025em}
 .s-seg{background:rgba(255,255,255,.35);border-radius:9px;height:5px}
 button:focus-visible,[tabindex]:focus-visible{outline:3px solid #e5ae61;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+
+/* Participation journey enhancements */
+.mission-join-btn{display:block;width:calc(100% - 32px);margin:0 16px 18px;padding:15px 14px;border:0;border-radius:18px;background:#75ac85;color:#fff;font-size:14px;font-family:inherit;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(72,137,92,.15);transition:transform .18s,background .18s}
+.mission-join-btn:active{transform:scale(.98);background:#568e68}
+.about-heading{padding:8px 3px 21px;color:#355f49}
+.about-kicker{display:inline-block;background:#e8f2db;color:#62896c;padding:7px 12px;border-radius:14px;font-size:12px;font-weight:700;margin-bottom:12px}
+.about-heading h2{font-size:24px;line-height:1.43;letter-spacing:-.05em;margin:0 0 8px}
+.about-heading p{font-size:13px;line-height:1.7;color:#718b79}
+.about-timeline{background:#fffefa;border:1px solid #e6eddc;border-radius:24px;padding:20px 17px;margin:22px 0 16px;box-shadow:var(--shadow-card)}
+.about-timeline h3{font-size:18px;color:#3c7053;margin-bottom:16px}
+.timeline-step{display:flex;align-items:flex-start;gap:12px;margin:14px 0}
+.timeline-step>span{flex:0 0 52px;background:#e5f1de;border-radius:12px;padding:8px 4px;text-align:center;font-size:12px;font-weight:700;color:#538160}
+.timeline-step>div{flex:1;padding:3px 0 14px;border-bottom:1px dashed #e2ebdb}
+.timeline-step:last-child>div{border:0;padding-bottom:0}
+.timeline-step strong{display:block;font-size:13px;color:#395b47;line-height:1.6}
+.timeline-step p{font-size:12px;color:#748b7a;line-height:1.7;margin-top:3px}
+.mission-success[hidden]{display:none!important}
+.mission-success{position:fixed;inset:0;z-index:9000;background:rgba(40,66,47,.48);display:flex;align-items:center;justify-content:center;padding:24px}
+.success-card{background:#fffdf5;border:1px solid #eceddf;border-radius:29px;max-width:360px;width:100%;padding:32px 24px 25px;text-align:center;box-shadow:0 20px 60px rgba(30,69,44,.18)}
+.success-illustration{font-size:48px;margin-bottom:12px}
+.success-card h2{color:#3e7253;font-size:20px;line-height:1.5;margin-bottom:10px;letter-spacing:-.04em}
+.success-card p{font-size:14px;line-height:1.9;color:#698371;margin-bottom:20px}
+.success-card button{width:100%;padding:13px}
+.upload-notice{line-height:1.7;padding:0 7px}
