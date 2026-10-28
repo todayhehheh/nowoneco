@@ -92,9 +92,11 @@
     <!-- 소개 -->
     <div id="tab-about" class="tab-pane">
       <div class="pane-pad">
+        <div class="about-heading"><span class="about-kicker">우리의 이야기 · 2025년부터</span><h2>작은 실천이 모이면<br>지구가 시언해져요!</h2><p>저희가 환경을 지키려고 직접 해온 활동을 소개할게요.</p></div>
         <div class="about-hero" style="width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:12px;">
           <iframe src="https://www.youtube-nocookie.com/embed/wRemdxn_Ow8" title="지구를 시언하게 환경동아리 활동 영상" style="width:100%;height:100%;border:0;display:block;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
         </div>
+        <div class="about-timeline"><h3>우리는 이렇게 시작했어요!</h3><div class="timeline-step"><span>2025</span><div><strong>환경을 지키기 시작했어요</strong><p>줍깅을 하고 분리배출을 배우면서 직접 실천했어요.</p></div></div><div class="timeline-step"><span>2026</span><div><strong>우리 활동을 더 많이 알리고 싶었어요</strong><p>AI와 함께 환경 미션 웹사이트를 만들었어요.</p></div></div><div class="timeline-step"><span>다음</span><div><strong>이제 우리랑 같이해요!</strong><p>NFC 키링으로 찾아온 사람들도 미션에 참여할 수 있어요.</p></div></div></div>
         <div class="about-row" id="replay-story-btn">
           <span>인트로 다시 보기</span>
           <span class="about-row-icon">▶</span>
@@ -159,9 +161,11 @@
       placeholder="오늘 한 일을 한 줄로 써주세요 (최대 80자)"></textarea>
     <div class="char-count"><span id="char-count">0</span>/80</div>
     <button class="btn-primary" id="submit-btn" disabled>올리기</button>
-    <div class="upload-notice">검토 후 게시됩니다 🌿</div>
+    <div class="upload-notice">사진은 확인 후 게시돼요. 얼굴, 이름, 학교나 집 주소처럼 개인을 알아볼 수 있는 정보는 올리지 말아 주세요.</div>
   </div>
 </div>
+
+<div id="mission-success" class="mission-success" role="dialog" aria-modal="true" aria-labelledby="success-title" hidden><div class="success-card"><div class="success-illustration">🌱</div><h2 id="success-title">지구를 지켜줘서 고마워요!</h2><p>우리랑 함께해 줘서 정말 기뻐요.<br>사진은 확인한 뒤 게시할게요!</p><button type="button" id="success-close" class="btn-primary">확인했어요</button></div></div>
 
 <!-- ══ ADMIN PANEL ════════════════════════════════ -->
 <div id="admin-panel">
