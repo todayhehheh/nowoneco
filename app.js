@@ -194,14 +194,14 @@ function renderSlide(type) {
       <div class="s-inner intro-center">
         <div class="intro-eyebrow">OUR STORY · 2025</div>
         <div class="intro-sprout" aria-hidden="true">🧤</div>
-        <div class="s-title">작년부터 저희는<br><span class="s-hl">하나씩 실천</span>했어요!</div>
-        <div class="s-sub">쓰레기를 줍고, 분리배출을 배우고,<br>환경을 지키는 방법을 찾아봤어요.</div>
+        <div class="s-title">2025년에는<br><span class="s-hl">환경 책</span>도 만들었어요!</div>
+        <div class="s-sub">우리만 하지 말고 다른 사람도<br>함께했으면 하는 마음이었어요.</div>
       </div>`;
 
   } else if (type === 'photo2') {
     slide.innerHTML = photoSlideHtml(
       'img/story-activity.jpg', '동아리의 환경 실천 활동',
-      '그런데 우리끼리만 하면<br>조금 아쉽잖아요?',
+      '그런데 책을 계속 만들면<br>종이와 인쇄도 필요하잖아요?',
       '📸', '우리의 작은 환경 실천',
       false
     );
@@ -212,8 +212,8 @@ function renderSlide(type) {
       <div class="s-inner intro-center">
         <div class="intro-eyebrow">TOGETHER FOR EARTH</div>
         <div class="intro-sprout" aria-hidden="true">🌎</div>
-        <div class="s-title">그래서 이제<br><span class="s-hl">함께하고 싶어요!</span></div>
-        <div class="s-sub">저희가 만든 작은 미션을<br>여러분도 같이 해주세요.</div>
+        <div class="s-title">그래서 이번엔<br><span class="s-hl">웹사이트</span>를 만들었어요!</div>
+        <div class="s-sub">종이를 덜 쓰고 싶었거든요.<br>키링도 재활용 플라스틱으로 만들었어요!</div>
       </div>`;
 
   } else if (type === 'join') {
@@ -223,7 +223,7 @@ function renderSlide(type) {
         <div class="intro-eyebrow">하루에 하나, 지구를 위한 실천</div>
         <div class="intro-sprout" aria-hidden="true">💚</div>
         <div class="s-title">오늘부터<br><span class="s-hl">우리랑 같이</span> 해요!</div>
-        <div class="s-sub">요일별 미션을 골라 해보고<br>사진으로 알려주세요!</div>
+        <div class="s-sub">NFC 키링으로 들어와<br>미션도 해보고 사진도 올려주세요!</div>
         <button class="s-start-btn" id="s-start" type="button">오늘의 미션 보러 가기 →</button>
       </div>`;
     const start = slide.querySelector('#s-start');
